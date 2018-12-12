@@ -1,0 +1,7 @@
+[package]
+name = "sunrise"
+version = "1.0.0"
+authors = ["Nathan Osman <nathan@quickmediasolutions.com>"]
+
+[dependencies]
+chrono = "0.4"
