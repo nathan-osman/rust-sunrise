@@ -4,4 +4,5 @@ version = "1.0.0"
 authors = ["Nathan Osman <nathan@quickmediasolutions.com>"]
 
 [dependencies]
+approx = "0.3.0"
 chrono = "0.4"
