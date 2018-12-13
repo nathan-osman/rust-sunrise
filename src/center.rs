@@ -20,12 +20,29 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-extern crate chrono;
+use std::f64;
+
+/// Calculates the angular difference between the position of the earth in its
+/// elliptical orbit and the position it would occupy in a circular orbit for
+/// the given mean anomaly.
+pub fn equation_of_center(solar_anomaly: f64) -> f64 {
+    let anomaly_in_rad: f64 = solar_anomaly * (f64::consts::PI / 180.);
+    let anomaly_sin = f64::sin(anomaly_in_rad);
+    let anomaly_2_sin = f64::sin(2. * anomaly_in_rad);
+    let anomaly_3_sin = f64::sin(3. * anomaly_in_rad);
+    1.9148 * anomaly_sin + 0.02 * anomaly_2_sin + 0.0003 * anomaly_3_sin
+}
 
 #[cfg(test)]
-#[macro_use]
-extern crate approx;
+mod tests {
+    use approx::assert_relative_eq;
 
-mod anomaly;
-mod center;
-mod noon;
+    #[test]
+    fn test_prime_meridian() {
+        assert_relative_eq!(
+            super::equation_of_center(358.30683),
+            -0.05778,
+            epsilon = 0.00001
+        )
+    }
+}
