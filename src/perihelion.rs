@@ -20,13 +20,20 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-extern crate chrono;
+pub fn argument_of_perihelion(day: f64) -> f64 {
+    102.93005 + 0.3179526 * (day - 2451545.) / 36525.
+}
 
 #[cfg(test)]
-#[macro_use]
-extern crate approx;
+mod tests {
+    use approx::assert_relative_eq;
 
-mod anomaly;
-mod center;
-mod noon;
-mod perihelion;
+    #[test]
+    fn test_prime_meridian() {
+        assert_relative_eq!(
+            super::argument_of_perihelion(2440588.),
+            102.83467,
+            epsilon = 0.00001
+        )
+    }
+}
