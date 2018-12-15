@@ -16,7 +16,7 @@ Begin by adding this crate to `Cargo.toml`:
 
 ```toml
 [dependencies]
-sunrise = "0.1.0"
+sunrise = "1.0.0"
 ```
 
 Next, add a declaration for the crate:
