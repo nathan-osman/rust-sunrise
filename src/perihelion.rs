@@ -20,6 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+/// Calculates the argument of periapsis for the earth on the given Julian day.
 pub fn argument_of_perihelion(day: f64) -> f64 {
     102.93005 + 0.3179526 * (day - 2451545.) / 36525.
 }
