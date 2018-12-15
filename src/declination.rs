@@ -20,20 +20,21 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-extern crate chrono;
-
-#[cfg(test)]
-#[macro_use]
-extern crate approx;
-
 use std::f64;
 
-const DEGREE: f64 = f64::consts::PI / 180.;
+/// Declination calculates one of the two angles required to locate a point on
+/// the celestial sphere in the equatorial coordinate system. The ecliptic
+/// longitude parameter must be in degrees.
+pub fn declination(ecliptic_longitude: f64) -> f64 {
+    f64::asin(f64::sin(ecliptic_longitude * ::DEGREE) * 0.39779) / ::DEGREE
+}
 
-mod anomaly;
-mod center;
-mod declination;
-mod longitude;
-mod noon;
-mod perihelion;
-mod transit;
+#[cfg(test)]
+mod tests {
+    use approx::assert_relative_eq;
+
+    #[test]
+    fn test_prime_meridian() {
+        assert_relative_eq!(super::declination(281.08372), -22.97753, epsilon = 0.00001)
+    }
+}
