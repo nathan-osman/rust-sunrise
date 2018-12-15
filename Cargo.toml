@@ -2,6 +2,14 @@
 name = "sunrise"
 version = "1.0.0"
 authors = ["Nathan Osman <nathan@quickmediasolutions.com>"]
+description = "Sunrise and sunset calculator"
+repository = "https://github.com/nathan-osman/rust-sunrise"
+readme = "README.md"
+categories = ["date-and-time"]
+license = "MIT"
+
+[badges]
+travis-ci = { repository = "nathan-osman/rust-sunrise" }
 
 [dependencies]
 approx = "0.3.0"
