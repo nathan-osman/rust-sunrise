@@ -40,3 +40,5 @@ mod noon;
 mod perihelion;
 mod sunrise;
 mod transit;
+
+pub use sunrise::sunrise_sunset;
