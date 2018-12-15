@@ -34,6 +34,7 @@ mod anomaly;
 mod center;
 mod declination;
 mod hourangle;
+mod julian;
 mod longitude;
 mod noon;
 mod perihelion;
