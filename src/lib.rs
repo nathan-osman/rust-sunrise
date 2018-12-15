@@ -38,4 +38,5 @@ mod julian;
 mod longitude;
 mod noon;
 mod perihelion;
+mod sunrise;
 mod transit;
