@@ -22,12 +22,10 @@
 
 use std::f64;
 
-const DEGREE: f64 = f64::consts::PI / 180.;
-
 /// Calculates the Julian day for the local true solar transit.
 pub fn solar_transit(day: f64, solar_anomaly: f64, ecliptic_longitude: f64) -> f64 {
-    day + (0.0053 * f64::sin(solar_anomaly * DEGREE)
-        - 0.0069 * f64::sin(2. * ecliptic_longitude * DEGREE))
+    day + (0.0053 * f64::sin(solar_anomaly * ::DEGREE)
+        - 0.0069 * f64::sin(2. * ecliptic_longitude * ::DEGREE))
 }
 
 #[cfg(test)]

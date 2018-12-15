@@ -26,6 +26,10 @@ extern crate chrono;
 #[macro_use]
 extern crate approx;
 
+use std::f64;
+
+const DEGREE: f64 = f64::consts::PI / 180.;
+
 mod anomaly;
 mod center;
 mod longitude;
