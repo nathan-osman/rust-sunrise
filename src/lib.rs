@@ -20,12 +20,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-extern crate chrono;
-
-#[cfg(test)]
-#[macro_use]
-extern crate approx;
-
 use std::f64;
 
 const DEGREE: f64 = f64::consts::PI / 180.;
@@ -41,4 +35,4 @@ mod perihelion;
 mod sunrise;
 mod transit;
 
-pub use sunrise::sunrise_sunset;
+pub use crate::sunrise::sunrise_sunset;

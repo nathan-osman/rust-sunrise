@@ -20,14 +20,14 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-use anomaly::solar_mean_anomaly;
-use center::equation_of_center;
-use declination::declination;
-use hourangle::hour_angle;
-use julian::julian_to_unix;
-use longitude::ecliptic_longitude;
-use noon::mean_solar_noon;
-use transit::solar_transit;
+use crate::anomaly::solar_mean_anomaly;
+use crate::center::equation_of_center;
+use crate::declination::declination;
+use crate::hourangle::hour_angle;
+use crate::julian::julian_to_unix;
+use crate::longitude::ecliptic_longitude;
+use crate::noon::mean_solar_noon;
+use crate::transit::solar_transit;
 
 /// Calculates the sunrise and sunset times for the given location and date.
 pub fn sunrise_sunset(

@@ -26,7 +26,7 @@ use std::f64;
 /// the celestial sphere in the equatorial coordinate system. The ecliptic
 /// longitude parameter must be in degrees.
 pub fn declination(ecliptic_longitude: f64) -> f64 {
-    f64::asin(f64::sin(ecliptic_longitude * ::DEGREE) * 0.39779) / ::DEGREE
+    f64::asin(f64::sin(ecliptic_longitude * crate::DEGREE) * 0.39779) / crate::DEGREE
 }
 
 #[cfg(test)]
