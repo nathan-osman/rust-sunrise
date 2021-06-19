@@ -28,14 +28,16 @@ use crate::julian::julian_to_unix;
 use crate::longitude::ecliptic_longitude;
 use crate::noon::mean_solar_noon;
 use crate::transit::solar_transit;
+use crate::Azimuth;
 
-/// Calculates the sunrise and sunset times for the given location and date.
-pub fn sunrise_sunset(
+/// Calculates the solar transit times for a given location, date and azimuth.
+pub fn time_of_transit(
     latitude: f64,
     longitude: f64,
     year: i32,
     month: u32,
     day: u32,
+    azimuth: Azimuth,
 ) -> (i64, i64) {
     let day: f64 = mean_solar_noon(longitude, year, month, day);
     let solar_anomaly: f64 = solar_mean_anomaly(day);
@@ -43,7 +45,7 @@ pub fn sunrise_sunset(
     let ecliptic_longitude: f64 = ecliptic_longitude(solar_anomaly, equation_of_center, day);
     let solar_transit: f64 = solar_transit(day, solar_anomaly, ecliptic_longitude);
     let declination: f64 = declination(ecliptic_longitude);
-    let hour_angle: f64 = hour_angle(latitude, declination);
+    let hour_angle: f64 = hour_angle(latitude, declination, azimuth);
     let frac: f64 = hour_angle / 360.;
     (
         julian_to_unix(solar_transit - frac),
@@ -51,10 +53,55 @@ pub fn sunrise_sunset(
     )
 }
 
+/// Wrapper for official sunrise/sunset (refraction=0.8333°).
+pub fn sunrise_sunset(
+    latitude: f64,
+    longitude: f64,
+    year: i32,
+    month: u32,
+    day: u32,
+) -> (i64, i64) {
+    time_of_transit(latitude, longitude, year, month, day, Azimuth::Official)
+}
+
+/// Wrapper for civil twilight (6° below horizon).
+pub fn civil_twilight(
+    latitude: f64,
+    longitude: f64,
+    year: i32,
+    month: u32,
+    day: u32,
+) -> (i64, i64) {
+    time_of_transit(latitude, longitude, year, month, day, Azimuth::Civil)
+}
+
+/// Wrapper for civil twilight (12° below horizon)
+pub fn nautical_twilight(
+    latitude: f64,
+    longitude: f64,
+    year: i32,
+    month: u32,
+    day: u32,
+) -> (i64, i64) {
+    time_of_transit(latitude, longitude, year, month, day, Azimuth::Nautical)
+}
+
+/// Wrapper for civil twilight (18° below horizon)
+pub fn astronomical_twilight(
+    latitude: f64,
+    longitude: f64,
+    year: i32,
+    month: u32,
+    day: u32,
+) -> (i64, i64) {
+    time_of_transit(latitude, longitude, year, month, day, Azimuth::Astronomical)
+}
+
+
 #[cfg(test)]
 mod tests {
     #[test]
     fn test_prime_meridian() {
-        assert_eq!(super::sunrise_sunset(0., 0., 1970, 1, 1), (21594, 65227),)
+        assert_eq!(super::sunrise_sunset(0., 0., 1970, 1, 1), (21594, 65228),)
     }
 }

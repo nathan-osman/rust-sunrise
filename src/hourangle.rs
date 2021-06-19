@@ -20,24 +20,30 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+use crate::Azimuth;
 use std::f64;
 
 /// Calculates the second of the two angles required to locate a point on the
 /// celestial sphere in the equatorial coordinate system.
-pub fn hour_angle(latitude: f64, declination: f64) -> f64 {
+pub fn hour_angle(latitude: f64, declination: f64, azimuth: Azimuth) -> f64 {
     let latitude_rad = latitude * crate::DEGREE;
     let declination_rad = declination * crate::DEGREE;
-    let numerator = -0.01449 - f64::sin(latitude_rad) * f64::sin(declination_rad);
+    let numerator = f64::cos((azimuth.angle() + 90.0) * crate::DEGREE)
+        - f64::sin(latitude_rad) * f64::sin(declination_rad);
     let denominator = f64::cos(latitude_rad) * f64::cos(declination_rad);
     f64::acos(numerator / denominator) / crate::DEGREE
 }
 
 #[cfg(test)]
 mod tests {
+    use super::*;
     use approx::assert_relative_eq;
-
     #[test]
     fn test_prime_meridian() {
-        assert_relative_eq!(super::hour_angle(0., -22.97753), 90.9018, epsilon = 0.00001)
+        assert_relative_eq!(
+            super::hour_angle(0., -22.97753, Azimuth::Official),
+            90.90515,
+            epsilon = 0.00001
+        )
     }
 }

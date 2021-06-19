@@ -24,5 +24,17 @@ extern crate sunrise;
 
 #[test]
 fn test_sunrise() {
-    assert_eq!(sunrise::sunrise_sunset(0., 0., 1970, 1, 1), (21594, 65227));
+    assert_eq!(sunrise::sunrise_sunset(0., 0., 2001, 1, 1), (978328794, 978372429));
+}
+#[test]
+fn test_civil() {
+    assert_eq!(sunrise::civil_twilight(0., 0., 2001, 1, 1), (978327447, 978373776));
+}
+#[test]
+fn test_nautical() {
+    assert_eq!(sunrise::nautical_twilight(0., 0., 2001, 1, 1), (978325879, 978375344));
+}
+#[test]
+fn test_astronomical() {
+    assert_eq!(sunrise::astronomical_twilight(0., 0., 2001, 1, 1), (978324305, 978376918));
 }
