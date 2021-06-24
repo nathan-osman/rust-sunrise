@@ -22,7 +22,7 @@
 
 use chrono::prelude::*;
 
-use julian::unix_to_julian;
+use crate::julian::unix_to_julian;
 
 /// Calculates the time at which the sun is at its highest altitude and returns
 /// the time as a Julian day.

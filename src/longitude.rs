@@ -20,7 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-use perihelion;
+use crate::perihelion;
 
 /// Calculates the angular distance of the earth along the ecliptic.
 pub fn ecliptic_longitude(solar_anomaly: f64, equation_of_center: f64, day: f64) -> f64 {
