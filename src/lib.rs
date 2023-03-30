@@ -40,5 +40,7 @@ mod noon;
 mod perihelion;
 mod sunrise;
 mod transit;
+mod elevation;
 
 pub use sunrise::sunrise_sunset;
+pub use elevation::time_of_elevation;
