@@ -31,7 +31,7 @@ You can `use` the `sunrise_sunset` function to perform the calculation:
 // Calculate times for January 1, 2016 in Toronto
 let (sunrise, sunset) = sunrise::sunrise_sunset(
     43.6532,
-    79.3832,
+    -79.3832,
     2016,
     1,
     1,
