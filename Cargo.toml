@@ -15,4 +15,4 @@ travis-ci = { repository = "nathan-osman/rust-sunrise" }
 chrono = { version = "0.4", default-features = false, features = [] }
 
 [dev-dependencies]
-approx = "0.3.0"
+approx = "0.5"
