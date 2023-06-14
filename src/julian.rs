@@ -35,7 +35,7 @@ pub fn julian_to_unix(day: f64) -> i64 {
 
 #[cfg(test)]
 mod tests {
-    use julian::UNIX_EPOCH_JULIAN_DAY;
+    use crate::julian::UNIX_EPOCH_JULIAN_DAY;
 
     #[test]
     fn test_unix_to_julian() {

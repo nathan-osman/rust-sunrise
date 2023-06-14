@@ -7,10 +7,13 @@ repository = "https://github.com/nathan-osman/rust-sunrise"
 readme = "README.md"
 categories = ["date-and-time"]
 license = "MIT"
+edition = "2021"
 
 [badges]
 travis-ci = { repository = "nathan-osman/rust-sunrise" }
 
 [dependencies]
-approx = "0.3.0"
 chrono = { version = "0.4", default-features = false, features = [] }
+
+[dev-dependencies]
+approx = "0.5"

@@ -22,12 +22,17 @@
 
 use chrono::prelude::*;
 
-use julian::unix_to_julian;
+use crate::julian::unix_to_julian;
 
 /// Calculates the time at which the sun is at its highest altitude and returns
 /// the time as a Julian day.
 pub fn mean_solar_noon(longitude: f64, year: i32, month: u32, day: u32) -> f64 {
-    unix_to_julian(Utc.ymd(year, month, day).and_hms(12, 0, 0).timestamp()) - longitude / 360.
+    unix_to_julian(
+        Utc.with_ymd_and_hms(year, month, day, 12, 0, 0)
+            .earliest()
+            .expect("invalid date and time")
+            .timestamp(),
+    ) - longitude / 360.
 }
 
 #[cfg(test)]

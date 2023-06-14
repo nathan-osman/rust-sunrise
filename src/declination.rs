@@ -20,13 +20,13 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-use std::f64;
+use crate::DEGREE;
 
 /// Declination calculates one of the two angles required to locate a point on
 /// the celestial sphere in the equatorial coordinate system. The ecliptic
 /// longitude parameter must be in degrees.
 pub fn declination(ecliptic_longitude: f64) -> f64 {
-    f64::asin(f64::sin(ecliptic_longitude * ::DEGREE) * 0.39779) / ::DEGREE
+    f64::asin(f64::sin(ecliptic_longitude * DEGREE) * 0.39779) / DEGREE
 }
 
 #[cfg(test)]
