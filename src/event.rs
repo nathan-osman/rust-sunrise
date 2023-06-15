@@ -89,7 +89,7 @@ impl SolarEvent {
     pub(crate) fn is_morning(&self) -> bool {
         matches!(
             self,
-            SolarEvent::Sunrise | SolarEvent::Dawn(_) | SolarEvent::Elevation { morning: true, .. }
+            SolarEvent::Sunrise | SolarEvent::Dusk(_) | SolarEvent::Elevation { morning: true, .. }
         )
     }
 }
