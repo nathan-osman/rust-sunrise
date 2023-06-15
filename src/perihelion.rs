@@ -20,20 +20,23 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+use crate::DEGREE;
+
 /// Calculates the argument of periapsis for the earth on the given Julian day.
 pub fn argument_of_perihelion(day: f64) -> f64 {
-    102.93005 + 0.3179526 * (day - 2451545.) / 36525.
+    (102.93005 + 0.3179526 * (day - 2451545.) / 36525.) * DEGREE
 }
 
 #[cfg(test)]
 mod tests {
+    use super::*;
     use approx::assert_relative_eq;
 
     #[test]
     fn test_prime_meridian() {
         assert_relative_eq!(
-            super::argument_of_perihelion(2440588.),
-            102.83467,
+            argument_of_perihelion(2440588.),
+            102.83467 * DEGREE,
             epsilon = 0.00001
         )
     }

@@ -24,5 +24,5 @@ extern crate sunrise;
 
 #[test]
 fn test_sunrise() {
-    assert_eq!(sunrise::sunrise_sunset(0., 0., 1970, 1, 1), (21594, 65227));
+    assert_eq!(sunrise::sunrise_sunset(0., 0., 1970, 1, 1), (21594, 65228));
 }
