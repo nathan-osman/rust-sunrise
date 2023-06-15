@@ -34,6 +34,17 @@ use crate::transit::solar_transit;
 
 /// Represent a full day at specific location, which allows to compute the exact date & time of any
 /// solar event during this day.
+///
+/// # Example
+///
+/// ```
+/// use sunrise::{sunrise_sunset, SolarDay, SolarEvent, DawnType};
+///
+/// // January 1, 2016 in Toronto
+/// let solar_day = SolarDay::new(43.6532, 79.3832, 2016, 1, 1);
+/// let sunrise_time = solar_day.event_time(SolarEvent::Sunrise);
+/// let dawn_time = solar_day.event_time(SolarEvent::Dawn(DawnType::Civil));
+/// ```
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct SolarDay {
     lat: f64,
@@ -69,6 +80,15 @@ impl SolarDay {
 }
 
 /// Calculates the sunrise and sunset times for the given location and date.
+///
+/// # Example
+///
+/// ```
+/// use sunrise::sunrise_sunset;
+///
+/// // Calculate times for January 1, 2016 in Toronto
+/// let (sunrise, sunset) = sunrise_sunset(43.6532, 79.3832, 2016, 1, 1);
+/// ```
 pub fn sunrise_sunset(
     latitude: f64,
     longitude: f64,
