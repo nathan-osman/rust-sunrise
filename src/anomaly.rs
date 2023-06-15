@@ -20,14 +20,19 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+use std::f64::consts::PI;
+
+use crate::DEGREE;
+
 const J2000: f64 = 2451545.;
 
 /// Calculates the angle of the sun relative to the earth for the specified
 /// Julian day.
 pub fn solar_mean_anomaly(day: f64) -> f64 {
-    let v: f64 = (357.5291 + 0.98560028 * (day - J2000)) % 360.;
+    let v = ((357.5291 + 0.98560028 * (day - J2000)) * DEGREE) % (2. * PI);
+
     if v < 0. {
-        v + 360.
+        v + 2. * PI
     } else {
         v
     }
@@ -35,13 +40,14 @@ pub fn solar_mean_anomaly(day: f64) -> f64 {
 
 #[cfg(test)]
 mod tests {
+    use super::*;
     use approx::assert_relative_eq;
 
     #[test]
     fn test_prime_meridian() {
         assert_relative_eq!(
-            super::solar_mean_anomaly(2440588.),
-            358.30683,
+            solar_mean_anomaly(2440588.),
+            358.30683 * DEGREE,
             epsilon = 0.00001
         )
     }

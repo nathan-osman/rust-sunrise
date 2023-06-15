@@ -20,27 +20,29 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+use std::f64::consts::PI;
+
 use crate::perihelion;
 
 /// Calculates the angular distance of the earth along the ecliptic.
 pub fn ecliptic_longitude(solar_anomaly: f64, equation_of_center: f64, day: f64) -> f64 {
     (solar_anomaly
         + equation_of_center
-        + 180.
-        + perihelion::argument_of_perihelion(day) % 360.
-        + 360.)
-        % 360.
+        + perihelion::argument_of_perihelion(day) % (2. * PI)
+        + 3. * PI)
+        % (2. * PI)
 }
 
 #[cfg(test)]
 mod tests {
+    use crate::DEGREE;
     use approx::assert_relative_eq;
 
     #[test]
     fn test_prime_meridian() {
         assert_relative_eq!(
-            super::ecliptic_longitude(358.30683, -0.05778, 2440588.),
-            281.08372,
+            super::ecliptic_longitude(358.30683 * DEGREE, -0.05778 * DEGREE, 2440588.),
+            281.08372 * DEGREE,
             epsilon = 0.00001
         )
     }

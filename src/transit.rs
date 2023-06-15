@@ -20,22 +20,20 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-use crate::DEGREE;
-
 /// Calculates the Julian day for the local true solar transit.
 pub fn solar_transit(day: f64, solar_anomaly: f64, ecliptic_longitude: f64) -> f64 {
-    day + (0.0053 * f64::sin(solar_anomaly * DEGREE)
-        - 0.0069 * f64::sin(2. * ecliptic_longitude * DEGREE))
+    day + (0.0053 * f64::sin(solar_anomaly) - 0.0069 * f64::sin(2. * ecliptic_longitude))
 }
 
 #[cfg(test)]
 mod tests {
+    use crate::DEGREE;
     use approx::assert_relative_eq;
 
     #[test]
     fn test_prime_meridian() {
         assert_relative_eq!(
-            super::solar_transit(2440588., 358.30683, 281.08372),
+            super::solar_transit(2440588., 358.30683 * DEGREE, 281.08372 * DEGREE),
             2440588.00245,
             epsilon = 0.00001
         )

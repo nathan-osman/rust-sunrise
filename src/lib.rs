@@ -25,6 +25,7 @@ const DEGREE: f64 = std::f64::consts::PI / 180.;
 mod anomaly;
 mod center;
 mod declination;
+mod event;
 mod hourangle;
 mod julian;
 mod longitude;
@@ -33,4 +34,5 @@ mod perihelion;
 mod sunrise;
 mod transit;
 
-pub use crate::sunrise::sunrise_sunset;
+pub use crate::event::{DawnType, SolarEvent};
+pub use crate::sunrise::{sunrise_sunset, SolarDay};
