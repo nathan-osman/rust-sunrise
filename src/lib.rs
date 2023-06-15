@@ -20,6 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+#![doc = include_str!("../README.md")]
+
 const DEGREE: f64 = std::f64::consts::PI / 180.;
 
 mod anomaly;
