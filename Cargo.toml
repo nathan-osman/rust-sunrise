@@ -5,7 +5,7 @@ authors = ["Nathan Osman <nathan@quickmediasolutions.com>"]
 description = "Sunrise and sunset calculator"
 repository = "https://github.com/nathan-osman/rust-sunrise"
 readme = "README.md"
-categories = ["date-and-time"]
+categories = ["date-and-time", "no-std"]
 license = "MIT"
 edition = "2024"
 
