@@ -1,7 +1,8 @@
 ## sunrise
 
-[![Build Status](https://travis-ci.org/nathan-osman/rust-sunrise.svg?branch=master)](https://travis-ci.org/nathan-osman/rust-sunrise)
-[![MIT License](http://img.shields.io/badge/license-MIT-9370d8.svg?style=flat)](http://opensource.org/licenses/MIT)
+[![](https://img.shields.io/crates/l/sunrise)][license]
+[![](https://img.shields.io/crates/v/sunrise)][crate]
+[![](https://img.shields.io/docsrs/sunrise)][docs]
 
 This crate provides a function for calculating sunrise and sunset times using [this method](https://en.wikipedia.org/wiki/Sunrise_equation#Complete_calculation_on_Earth).
 
@@ -37,3 +38,7 @@ let (sunrise, sunset) = sunrise::sunrise_sunset(
     1,
 );
 ```
+
+[crate]: https://crates.io/crates/sunrise "crates.io"
+[docs]: https://docs.rs/sunrise "Documentation"
+[license]: http://opensource.org/licenses/MIT "MIT License"
