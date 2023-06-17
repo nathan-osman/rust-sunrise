@@ -6,6 +6,8 @@
 
 This crate provides a function for calculating sunrise and sunset times using [this method](https://en.wikipedia.org/wiki/Sunrise_equation#Complete_calculation_on_Earth).
 
+You can enable the **no-std feature** if you need it to work in such a context, it will rely on `libm` instead.
+
 ### Usage
 
 In order to perform the calculation, you'll need to provide the following:
@@ -17,7 +19,7 @@ Begin by adding this crate to `Cargo.toml`:
 
 ```toml
 [dependencies]
-sunrise = "1.1"
+sunrise = "1.2"
 ```
 
 You can use the `SolarDay` struct to perform computation of an event at a
