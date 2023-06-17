@@ -28,8 +28,6 @@ mod longitude;
 mod perihelion;
 mod transit;
 
-use std::f64::consts::PI;
-
 use self::anomaly::solar_mean_anomaly;
 use self::center::equation_of_center;
 use self::declination::declination;
@@ -38,6 +36,7 @@ use self::longitude::ecliptic_longitude;
 use self::transit::solar_transit;
 use crate::event::SolarEvent;
 use crate::julian::{julian_to_unix, mean_solar_noon};
+use crate::math::PI;
 
 /// Represent a full day at specific location, which allows to compute the exact date & time of any
 /// solar event during this day.

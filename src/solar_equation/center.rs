@@ -20,17 +20,15 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-use std::f64;
-
-use crate::DEGREE;
+use crate::math::{sin, DEGREE};
 
 /// Calculates the angular difference between the position of the earth in its
 /// elliptical orbit and the position it would occupy in a circular orbit for
 /// the given mean anomaly.
 pub(crate) fn equation_of_center(solar_anomaly: f64) -> f64 {
-    let anomaly_sin = f64::sin(solar_anomaly);
-    let anomaly_2_sin = f64::sin(2. * solar_anomaly);
-    let anomaly_3_sin = f64::sin(3. * solar_anomaly);
+    let anomaly_sin = sin(solar_anomaly);
+    let anomaly_2_sin = sin(2. * solar_anomaly);
+    let anomaly_3_sin = sin(3. * solar_anomaly);
     (1.9148 * anomaly_sin + 0.02 * anomaly_2_sin + 0.0003 * anomaly_3_sin) * DEGREE
 }
 

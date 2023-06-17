@@ -20,7 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-use crate::DEGREE;
+use crate::math::DEGREE;
 
 /// Calculates the argument of periapsis for the earth on the given Julian day.
 pub(crate) fn argument_of_perihelion(day: f64) -> f64 {

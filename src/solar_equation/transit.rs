@@ -20,14 +20,16 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+use crate::math::sin;
+
 /// Calculates the Julian day for the local true solar transit.
 pub(crate) fn solar_transit(day: f64, solar_anomaly: f64, ecliptic_longitude: f64) -> f64 {
-    day + (0.0053 * f64::sin(solar_anomaly) - 0.0069 * f64::sin(2. * ecliptic_longitude))
+    day + (0.0053 * sin(solar_anomaly) - 0.0069 * sin(2. * ecliptic_longitude))
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::DEGREE;
+    use crate::math::DEGREE;
     use approx::assert_relative_eq;
 
     #[test]
