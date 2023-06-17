@@ -12,6 +12,7 @@ jobs:
     strategy:
       matrix:
         toolchain: ["stable", "beta", "nightly"]
+        features: ["", "no-std"]
     steps:
       - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
@@ -26,13 +27,13 @@ jobs:
           cargo clippy -- --version
           cargo fmt -- --version
       - name: Lint
-        run: cargo clippy -- -D warnings
+        run: cargo clippy --features "${{ matrix.features }}" -- -D warnings
         if: matrix.toolchain != 'nightly'
       - name: Format
-        run: cargo fmt -- --check
+        run: cargo fmt --features "${{ matrix.features }}" -- --check
         if: matrix.toolchain != 'nightly'
       - name: Tests
-        run: cargo test
+        run: cargo test --features "${{ matrix.features }}"
 
   deploy-rust:
     runs-on: ubuntu-latest
