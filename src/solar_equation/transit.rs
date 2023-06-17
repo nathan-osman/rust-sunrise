@@ -20,23 +20,21 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-use crate::DEGREE;
-
-/// Calculates the argument of periapsis for the earth on the given Julian day.
-pub fn argument_of_perihelion(day: f64) -> f64 {
-    (102.93005 + 0.3179526 * (day - 2451545.) / 36525.) * DEGREE
+/// Calculates the Julian day for the local true solar transit.
+pub(crate) fn solar_transit(day: f64, solar_anomaly: f64, ecliptic_longitude: f64) -> f64 {
+    day + (0.0053 * f64::sin(solar_anomaly) - 0.0069 * f64::sin(2. * ecliptic_longitude))
 }
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use crate::DEGREE;
     use approx::assert_relative_eq;
 
     #[test]
     fn test_prime_meridian() {
         assert_relative_eq!(
-            argument_of_perihelion(2440588.),
-            102.83467 * DEGREE,
+            super::solar_transit(2440588., 358.30683 * DEGREE, 281.08372 * DEGREE),
+            2440588.00245,
             epsilon = 0.00001
         )
     }

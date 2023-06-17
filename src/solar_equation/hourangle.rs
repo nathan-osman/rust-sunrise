@@ -25,7 +25,12 @@ use crate::DEGREE;
 
 /// Calculates the second of the two angles required to locate a point on the
 /// celestial sphere in the equatorial coordinate system.
-pub fn hour_angle(latitude_deg: f64, declination: f64, altitude: f64, event: SolarEvent) -> f64 {
+pub(crate) fn hour_angle(
+    latitude_deg: f64,
+    declination: f64,
+    altitude: f64,
+    event: SolarEvent,
+) -> f64 {
     let latitude = latitude_deg * DEGREE;
     let denominator = f64::cos(latitude) * f64::cos(declination);
 
