@@ -20,25 +20,24 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-use chrono::prelude::*;
+use crate::DEGREE;
 
-use crate::julian::unix_to_julian;
-
-/// Calculates the time at which the sun is at its highest altitude and returns
-/// the time as a Julian day.
-pub fn mean_solar_noon(lon: f64, year: i32, month: u32, day: u32) -> f64 {
-    unix_to_julian(
-        Utc.with_ymd_and_hms(year, month, day, 12, 0, 0)
-            .earliest()
-            .expect("invalid date and time")
-            .timestamp(),
-    ) - lon / 360.
+/// Calculates the argument of periapsis for the earth on the given Julian day.
+pub(crate) fn argument_of_perihelion(day: f64) -> f64 {
+    (102.93005 + 0.3179526 * (day - 2451545.) / 36525.) * DEGREE
 }
 
 #[cfg(test)]
 mod tests {
+    use super::*;
+    use approx::assert_relative_eq;
+
     #[test]
     fn test_prime_meridian() {
-        assert_eq!(super::mean_solar_noon(0., 1970, 1, 1), 2440588.);
+        assert_relative_eq!(
+            argument_of_perihelion(2440588.),
+            102.83467 * DEGREE,
+            epsilon = 0.00001
+        )
     }
 }

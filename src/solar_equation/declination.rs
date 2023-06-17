@@ -20,9 +20,11 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-/// Calculates the Julian day for the local true solar transit.
-pub fn solar_transit(day: f64, solar_anomaly: f64, ecliptic_longitude: f64) -> f64 {
-    day + (0.0053 * f64::sin(solar_anomaly) - 0.0069 * f64::sin(2. * ecliptic_longitude))
+/// Declination calculates one of the two angles required to locate a point on
+/// the celestial sphere in the equatorial coordinate system. The ecliptic
+/// longitude parameter must be in degrees.
+pub(crate) fn declination(ecliptic_longitude: f64) -> f64 {
+    f64::asin(f64::sin(ecliptic_longitude) * 0.39779)
 }
 
 #[cfg(test)]
@@ -33,8 +35,8 @@ mod tests {
     #[test]
     fn test_prime_meridian() {
         assert_relative_eq!(
-            super::solar_transit(2440588., 358.30683 * DEGREE, 281.08372 * DEGREE),
-            2440588.00245,
+            super::declination(281.08372 * DEGREE),
+            -22.97753 * DEGREE,
             epsilon = 0.00001
         )
     }

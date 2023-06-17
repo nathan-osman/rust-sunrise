@@ -20,23 +20,30 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-/// Declination calculates one of the two angles required to locate a point on
-/// the celestial sphere in the equatorial coordinate system. The ecliptic
-/// longitude parameter must be in degrees.
-pub fn declination(ecliptic_longitude: f64) -> f64 {
-    f64::asin(f64::sin(ecliptic_longitude) * 0.39779)
+use std::f64;
+
+use crate::DEGREE;
+
+/// Calculates the angular difference between the position of the earth in its
+/// elliptical orbit and the position it would occupy in a circular orbit for
+/// the given mean anomaly.
+pub(crate) fn equation_of_center(solar_anomaly: f64) -> f64 {
+    let anomaly_sin = f64::sin(solar_anomaly);
+    let anomaly_2_sin = f64::sin(2. * solar_anomaly);
+    let anomaly_3_sin = f64::sin(3. * solar_anomaly);
+    (1.9148 * anomaly_sin + 0.02 * anomaly_2_sin + 0.0003 * anomaly_3_sin) * DEGREE
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::DEGREE;
+    use super::*;
     use approx::assert_relative_eq;
 
     #[test]
     fn test_prime_meridian() {
         assert_relative_eq!(
-            super::declination(281.08372 * DEGREE),
-            -22.97753 * DEGREE,
+            equation_of_center(358.30683 * DEGREE),
+            -0.05778 * DEGREE,
             epsilon = 0.00001
         )
     }

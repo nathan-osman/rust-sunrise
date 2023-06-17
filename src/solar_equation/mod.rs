@@ -20,17 +20,24 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+mod anomaly;
+mod center;
+mod declination;
+mod hourangle;
+mod longitude;
+mod perihelion;
+mod transit;
+
 use std::f64::consts::PI;
 
-use crate::anomaly::solar_mean_anomaly;
-use crate::center::equation_of_center;
-use crate::declination::declination;
+use self::anomaly::solar_mean_anomaly;
+use self::center::equation_of_center;
+use self::declination::declination;
+use self::hourangle::hour_angle;
+use self::longitude::ecliptic_longitude;
+use self::transit::solar_transit;
 use crate::event::SolarEvent;
-use crate::hourangle::hour_angle;
-use crate::julian::julian_to_unix;
-use crate::longitude::ecliptic_longitude;
-use crate::noon::mean_solar_noon;
-use crate::transit::solar_transit;
+use crate::julian::{julian_to_unix, mean_solar_noon};
 
 /// Represent a full day at specific location, which allows to compute the exact date & time of any
 /// solar event during this day.
@@ -86,29 +93,4 @@ impl SolarDay {
         let frac = hour_angle / (2. * PI);
         julian_to_unix(self.solar_transit + frac)
     }
-}
-
-/// Calculates the sunrise and sunset times for the given location and date.
-///
-/// # Example
-///
-/// ```
-/// use sunrise::sunrise_sunset;
-///
-/// // Calculate times for January 1, 2016 in Toronto
-/// let (sunrise, sunset) = sunrise_sunset(43.6532, -79.3832, 2016, 1, 1);
-/// ```
-pub fn sunrise_sunset(
-    latitude: f64,
-    longitude: f64,
-    year: i32,
-    month: u32,
-    day: u32,
-) -> (i64, i64) {
-    let solar_day = SolarDay::new(latitude, longitude, year, month, day);
-
-    (
-        solar_day.event_time(SolarEvent::Sunrise),
-        solar_day.event_time(SolarEvent::Sunset),
-    )
 }
