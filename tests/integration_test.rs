@@ -42,6 +42,23 @@ fn test_sunrise() {
 }
 
 #[test]
+fn test_altitude() {
+    assert_eq!(
+        solar_day(1970)
+            .with_altitude(123.)
+            .event_time(SolarEvent::Sunrise),
+        21494 // 01/01/1970 06:58:14
+    );
+
+    assert_eq!(
+        solar_day(1970)
+            .with_altitude(-10.)
+            .event_time(SolarEvent::Sunrise),
+        21622 // 01/01/1970 07:00:22
+    );
+}
+
+#[test]
 fn test_civil() {
     assert_eq!(
         solar_day(2023).event_time(SolarEvent::Dusk(DawnType::Civil)),
