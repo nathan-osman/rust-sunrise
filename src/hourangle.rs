@@ -20,17 +20,18 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-use std::f64::consts::PI;
-
 use crate::event::SolarEvent;
 use crate::DEGREE;
 
 /// Calculates the second of the two angles required to locate a point on the
 /// celestial sphere in the equatorial coordinate system.
-pub fn hour_angle(latitude_deg: f64, declination: f64, event: SolarEvent) -> f64 {
+pub fn hour_angle(latitude_deg: f64, declination: f64, altitude: f64, event: SolarEvent) -> f64 {
     let latitude = latitude_deg * DEGREE;
     let denominator = f64::cos(latitude) * f64::cos(declination);
-    let numerator = f64::cos(PI / 2. + event.angle()) - f64::sin(latitude) * f64::sin(declination);
+
+    let numerator = -f64::sin(
+        event.angle() + (2.076 * DEGREE * altitude.signum() * altitude.abs().sqrt() / 60.),
+    ) - f64::sin(latitude) * f64::sin(declination);
 
     let sign = {
         if event.is_morning() {
@@ -51,17 +52,32 @@ mod tests {
     #[test]
     fn test_oposites() {
         assert_relative_eq!(
-            hour_angle(32., -22., SolarEvent::Sunrise),
-            -hour_angle(32., -22., SolarEvent::Sunset),
-        )
+            hour_angle(32., -22., 0., SolarEvent::Sunrise),
+            -hour_angle(32., -22., 0., SolarEvent::Sunset),
+        );
     }
 
     #[test]
     fn test_prime_meridian() {
         assert_relative_eq!(
-            hour_angle(0., -22.97753 * DEGREE, SolarEvent::Sunset),
+            hour_angle(0., -22.97753 * DEGREE, 0., SolarEvent::Sunset),
             90.90516 * DEGREE,
             epsilon = 0.00001
-        )
+        );
+    }
+
+    #[test]
+    fn test_altitude() {
+        assert_relative_eq!(
+            hour_angle(0., -22.97753 * DEGREE, 100., SolarEvent::Sunset),
+            91.28098 * DEGREE,
+            epsilon = 0.00001
+        );
+
+        assert_relative_eq!(
+            hour_angle(0., -22.97753 * DEGREE, -100., SolarEvent::Sunset),
+            90.52933 * DEGREE,
+            epsilon = 0.00001
+        );
     }
 }
