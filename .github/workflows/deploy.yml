@@ -30,7 +30,7 @@ jobs:
         run: cargo clippy --features "${{ matrix.features }}" -- -D warnings
         if: matrix.toolchain != 'nightly'
       - name: Format
-        run: cargo fmt --features "${{ matrix.features }}" -- --check
+        run: cargo fmt -- --check
         if: matrix.toolchain != 'nightly'
       - name: Tests
         run: cargo test --features "${{ matrix.features }}"
