@@ -20,20 +20,28 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-/// Calculates the argument of periapsis for the earth on the given Julian day.
-pub fn argument_of_perihelion(day: f64) -> f64 {
-    102.93005 + 0.3179526 * (day - 2451545.) / 36525.
+use crate::math::{sin, DEGREE};
+
+/// Calculates the angular difference between the position of the earth in its
+/// elliptical orbit and the position it would occupy in a circular orbit for
+/// the given mean anomaly.
+pub(crate) fn equation_of_center(solar_anomaly: f64) -> f64 {
+    let anomaly_sin = sin(solar_anomaly);
+    let anomaly_2_sin = sin(2. * solar_anomaly);
+    let anomaly_3_sin = sin(3. * solar_anomaly);
+    (1.9148 * anomaly_sin + 0.02 * anomaly_2_sin + 0.0003 * anomaly_3_sin) * DEGREE
 }
 
 #[cfg(test)]
 mod tests {
+    use super::*;
     use approx::assert_relative_eq;
 
     #[test]
     fn test_prime_meridian() {
         assert_relative_eq!(
-            super::argument_of_perihelion(2440588.),
-            102.83467,
+            equation_of_center(358.30683 * DEGREE),
+            -0.05778 * DEGREE,
             epsilon = 0.00001
         )
     }

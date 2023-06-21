@@ -20,41 +20,26 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-use crate::anomaly::solar_mean_anomaly;
-use crate::center::equation_of_center;
-use crate::declination::declination;
-use crate::hourangle::hour_angle;
-use crate::julian::julian_to_unix;
-use crate::longitude::ecliptic_longitude;
-use crate::noon::mean_solar_noon;
-use crate::transit::solar_transit;
+use crate::math::{asin, sin};
 
-/// Calculates the sunrise and sunset times for the given location and date.
-pub fn sunrise_sunset(
-    latitude: f64,
-    longitude: f64,
-    year: i32,
-    month: u32,
-    day: u32,
-) -> (i64, i64) {
-    let day: f64 = mean_solar_noon(longitude, year, month, day);
-    let solar_anomaly: f64 = solar_mean_anomaly(day);
-    let equation_of_center: f64 = equation_of_center(solar_anomaly);
-    let ecliptic_longitude: f64 = ecliptic_longitude(solar_anomaly, equation_of_center, day);
-    let solar_transit: f64 = solar_transit(day, solar_anomaly, ecliptic_longitude);
-    let declination: f64 = declination(ecliptic_longitude);
-    let hour_angle: f64 = hour_angle(latitude, declination);
-    let frac: f64 = hour_angle / 360.;
-    (
-        julian_to_unix(solar_transit - frac),
-        julian_to_unix(solar_transit + frac),
-    )
+/// Declination calculates one of the two angles required to locate a point on
+/// the celestial sphere in the equatorial coordinate system. The ecliptic
+/// longitude parameter must be in degrees.
+pub(crate) fn declination(ecliptic_longitude: f64) -> f64 {
+    asin(sin(ecliptic_longitude) * 0.39779)
 }
 
 #[cfg(test)]
 mod tests {
+    use crate::math::DEGREE;
+    use approx::assert_relative_eq;
+
     #[test]
     fn test_prime_meridian() {
-        assert_eq!(super::sunrise_sunset(0., 0., 1970, 1, 1), (21594, 65227),)
+        assert_relative_eq!(
+            super::declination(281.08372 * DEGREE),
+            -22.97753 * DEGREE,
+            epsilon = 0.00001
+        )
     }
 }

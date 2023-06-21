@@ -6,6 +6,8 @@
 
 This crate provides a function for calculating sunrise and sunset times using [this method](https://en.wikipedia.org/wiki/Sunrise_equation#Complete_calculation_on_Earth).
 
+You can enable the **no-std feature** if you need it to work in such a context, it will rely on `libm` instead.
+
 ### Usage
 
 In order to perform the calculation, you'll need to provide the following:
@@ -17,26 +19,24 @@ Begin by adding this crate to `Cargo.toml`:
 
 ```toml
 [dependencies]
-sunrise = "1.0.0"
-```
-
-Next, add a declaration for the crate:
-
-```rust
-extern crate sunrise;
+sunrise = "1.2"
 ```
 
 You can `use` the `sunrise_sunset` function to perform the calculation:
 
 ```rust
 // Calculate times for January 1, 2016 in Toronto
-let (sunrise, sunset) = sunrise::sunrise_sunset(
-    43.6532,
-    -79.3832,
-    2016,
-    1,
-    1,
-);
+let (sunrise, sunset) = sunrise::sunrise_sunset(43.6532, -79.3832, 2016, 1, 1);
+```
+
+If you need more refined control, you can use the `SolarDay` struct:
+
+```rust
+use sunrise::{sunrise_sunset, SolarDay, SolarEvent, DawnType};
+
+let dawn = SolarDay::new(43.6532, -79.3832, 2016, 1, 1)
+    .with_altitude(54.)
+    .event_time(SolarEvent::Dawn(DawnType::Civil));
 ```
 
 [crate]: https://crates.io/crates/sunrise "crates.io"
