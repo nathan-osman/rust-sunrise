@@ -20,41 +20,31 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-use crate::anomaly::solar_mean_anomaly;
-use crate::center::equation_of_center;
-use crate::declination::declination;
-use crate::hourangle::hour_angle;
-use crate::julian::julian_to_unix;
-use crate::longitude::ecliptic_longitude;
-use crate::noon::mean_solar_noon;
-use crate::transit::solar_transit;
+use std::f64;
 
-/// Calculates the sunrise and sunset times for the given location and date.
-pub fn sunrise_sunset(
-    latitude: f64,
-    longitude: f64,
-    year: i32,
-    month: u32,
-    day: u32,
-) -> (i64, i64) {
-    let day: f64 = mean_solar_noon(longitude, year, month, day);
-    let solar_anomaly: f64 = solar_mean_anomaly(day);
-    let equation_of_center: f64 = equation_of_center(solar_anomaly);
-    let ecliptic_longitude: f64 = ecliptic_longitude(solar_anomaly, equation_of_center, day);
-    let solar_transit: f64 = solar_transit(day, solar_anomaly, ecliptic_longitude);
-    let declination: f64 = declination(ecliptic_longitude);
-    let hour_angle: f64 = hour_angle(latitude, declination);
-    let frac: f64 = hour_angle / 360.;
-    (
-        julian_to_unix(solar_transit - frac),
-        julian_to_unix(solar_transit + frac),
-    )
+use crate::DEGREE;
+
+/// Calculates the angular difference between the position of the earth in its
+/// elliptical orbit and the position it would occupy in a circular orbit for
+/// the given mean anomaly.
+pub(crate) fn equation_of_center(solar_anomaly: f64) -> f64 {
+    let anomaly_sin = f64::sin(solar_anomaly);
+    let anomaly_2_sin = f64::sin(2. * solar_anomaly);
+    let anomaly_3_sin = f64::sin(3. * solar_anomaly);
+    (1.9148 * anomaly_sin + 0.02 * anomaly_2_sin + 0.0003 * anomaly_3_sin) * DEGREE
 }
 
 #[cfg(test)]
 mod tests {
+    use super::*;
+    use approx::assert_relative_eq;
+
     #[test]
     fn test_prime_meridian() {
-        assert_eq!(super::sunrise_sunset(0., 0., 1970, 1, 1), (21594, 65227),)
+        assert_relative_eq!(
+            equation_of_center(358.30683 * DEGREE),
+            -0.05778 * DEGREE,
+            epsilon = 0.00001
+        )
     }
 }

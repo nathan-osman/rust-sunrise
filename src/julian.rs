@@ -20,17 +20,30 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+use chrono::{TimeZone, Utc};
+
 const SECONDS_IN_A_DAY: f64 = 86400.;
 const UNIX_EPOCH_JULIAN_DAY: f64 = 2440587.5;
 
 /// Converts a unix timestamp to a Julian day.
-pub fn unix_to_julian(timestamp: i64) -> f64 {
+pub(crate) fn unix_to_julian(timestamp: i64) -> f64 {
     timestamp as f64 / SECONDS_IN_A_DAY + UNIX_EPOCH_JULIAN_DAY
 }
 
 /// Converts a Julian day to a unix timestamp.
-pub fn julian_to_unix(day: f64) -> i64 {
+pub(crate) fn julian_to_unix(day: f64) -> i64 {
     ((day - UNIX_EPOCH_JULIAN_DAY) * SECONDS_IN_A_DAY) as i64
+}
+
+/// Calculates the time at which the sun is at its highest altitude and returns
+/// the time as a Julian day.
+pub fn mean_solar_noon(lon: f64, year: i32, month: u32, day: u32) -> f64 {
+    unix_to_julian(
+        Utc.with_ymd_and_hms(year, month, day, 12, 0, 0)
+            .earliest()
+            .expect("invalid date and time")
+            .timestamp(),
+    ) - lon / 360.
 }
 
 #[cfg(test)]
@@ -45,5 +58,10 @@ mod tests {
     #[test]
     fn test_julian_to_unix() {
         assert_eq!(super::julian_to_unix(UNIX_EPOCH_JULIAN_DAY), 0)
+    }
+
+    #[test]
+    fn test_solar_noon() {
+        assert_eq!(super::mean_solar_noon(0., 1970, 1, 1), 2440588.);
     }
 }
