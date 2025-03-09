@@ -21,12 +21,12 @@
 // IN THE SOFTWARE.
 
 #![doc = include_str!("../README.md")]
-
-const DEGREE: f64 = std::f64::consts::PI / 180.;
+#![cfg_attr(feature = "no-std", no_std)]
 
 mod coordinates;
 mod event;
 mod julian;
+mod math;
 mod solar_equation;
 
 use chrono::NaiveDate;

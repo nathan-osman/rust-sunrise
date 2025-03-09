@@ -20,16 +20,18 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+use crate::math::{asin, sin};
+
 /// Declination calculates one of the two angles required to locate a point on
 /// the celestial sphere in the equatorial coordinate system. The ecliptic
 /// longitude parameter must be in degrees.
 pub(crate) fn declination(ecliptic_longitude: f64) -> f64 {
-    f64::asin(f64::sin(ecliptic_longitude) * 0.39779)
+    asin(sin(ecliptic_longitude) * 0.39779)
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::DEGREE;
+    use crate::math::DEGREE;
     use approx::assert_relative_eq;
 
     #[test]

@@ -20,9 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-use std::f64::consts::PI;
-
-use crate::DEGREE;
+use crate::math::{DEGREE, PI};
 
 const J2000: f64 = 2451545.;
 

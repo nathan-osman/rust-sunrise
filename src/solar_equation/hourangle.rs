@@ -20,8 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-use crate::DEGREE;
 use crate::event::SolarEvent;
+use crate::math::{DEGREE, abs, acos, cos, signum, sin, sqrt};
 
 /// Calculates the second of the two angles required to locate a point on the
 /// celestial sphere in the equatorial coordinate system.
@@ -32,14 +32,14 @@ pub(crate) fn hour_angle(
     event: SolarEvent,
 ) -> f64 {
     let latitude = latitude_deg * DEGREE;
-    let denominator = f64::cos(latitude) * f64::cos(declination);
+    let denominator = cos(latitude) * cos(declination);
 
-    let numerator = -f64::sin(
-        event.angle() + (2.076 * DEGREE * altitude.signum() * altitude.abs().sqrt() / 60.),
-    ) - f64::sin(latitude) * f64::sin(declination);
+    let numerator =
+        -sin(event.angle() + (2.076 * DEGREE * signum(altitude) * sqrt(abs(altitude)) / 60.))
+            - sin(latitude) * sin(declination);
 
     let sign = if event.is_morning() { -1. } else { 1. };
-    sign * f64::acos(numerator / denominator)
+    sign * acos(numerator / denominator)
 }
 
 #[cfg(test)]

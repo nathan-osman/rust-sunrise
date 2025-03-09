@@ -32,6 +32,7 @@ impl Coordinates {
     }
 }
 
+#[cfg(not(feature = "no-std"))]
 impl std::fmt::Display for Coordinates {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "({:?}, {:?})", self.lat, self.lon)
@@ -59,6 +60,7 @@ mod tests {
     }
 
     #[test]
+    #[cfg(not(feature = "no-std"))]
     fn display() {
         let coord = Coordinates::new(10.0, 36.35).unwrap();
         assert_eq!(coord.to_string(), "(10.0, 36.35)");

@@ -1,16 +1,25 @@
 [package]
 name = "sunrise"
-version = "1.1.0"
+version = "1.2.0"
 authors = ["Nathan Osman <nathan@quickmediasolutions.com>"]
 description = "Sunrise and sunset calculator"
 repository = "https://github.com/nathan-osman/rust-sunrise"
 readme = "README.md"
-categories = ["date-and-time"]
+categories = ["date-and-time", "no-std"]
 license = "MIT"
 edition = "2024"
 
+[lib]
+name = "sunrise"
+
+[features]
+no-std = ["dep:libm"]
+
 [dependencies]
 chrono = { version = "0.4", default-features = false, features = [] }
+
+# feature: no-std
+libm = { version = "0.2", optional = true }
 
 [dev-dependencies]
 approx = "0.5"

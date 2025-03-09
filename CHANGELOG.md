@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.0
+
+- Add new feature "no-std"
+
 ## 1.1.0
 
 - Add the `SolarDay` struct that allows to performs calculations on a
