@@ -7,7 +7,7 @@ repository = "https://github.com/nathan-osman/rust-sunrise"
 readme = "README.md"
 categories = ["date-and-time"]
 license = "MIT"
-edition = "2021"
+edition = "2024"
 
 [dependencies]
 chrono = { version = "0.4", default-features = false, features = [] }
