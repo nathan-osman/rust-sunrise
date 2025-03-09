@@ -30,14 +30,18 @@ mod transit;
 
 use std::f64::consts::PI;
 
+use chrono::NaiveDate;
+
+use crate::event::SolarEvent;
+use crate::julian::{julian_to_unix, mean_solar_noon};
+use crate::Coordinates;
+
 use self::anomaly::solar_mean_anomaly;
 use self::center::equation_of_center;
 use self::declination::declination;
 use self::hourangle::hour_angle;
 use self::longitude::ecliptic_longitude;
 use self::transit::solar_transit;
-use crate::event::SolarEvent;
-use crate::julian::{julian_to_unix, mean_solar_noon};
 
 /// Represent a full day at specific location, which allows to compute the exact date & time of any
 /// solar event during this day.
@@ -45,12 +49,16 @@ use crate::julian::{julian_to_unix, mean_solar_noon};
 /// # Example
 ///
 /// ```
-/// use sunrise::{sunrise_sunset, SolarDay, SolarEvent, DawnType};
+/// use chrono::NaiveDate;
+/// use sunrise::{Coordinates, DawnType, SolarDay, SolarEvent};
 ///
 /// // January 1, 2016 in Toronto
-/// let solar_day = SolarDay::new(43.6532, -79.3832, 2016, 1, 1);
-/// let sunrise_time = solar_day.event_time(SolarEvent::Sunrise);
-/// let dawn_time = solar_day.event_time(SolarEvent::Dawn(DawnType::Civil));
+/// let date = NaiveDate::from_ymd_opt(2016, 1, 1).unwrap();
+/// let coord = Coordinates::new(43.6532, -79.3832).unwrap();
+///
+/// let dawn = SolarDay::new(coord, date)
+///     .with_altitude(54.)
+///     .event_time(SolarEvent::Dawn(DawnType::Civil));
 /// ```
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct SolarDay {
@@ -61,11 +69,11 @@ pub struct SolarDay {
 }
 
 impl SolarDay {
-    /// Initialize given position (in degrees) and a date.
+    /// Initialize given position and a date.
     ///
     /// This will pre-compute some values so you should re-use this struct if it is possible.
-    pub fn new(lat: f64, lon: f64, year: i32, month: u32, day: u32) -> Self {
-        let day = mean_solar_noon(lon, year, month, day);
+    pub fn new(coord: Coordinates, date: NaiveDate) -> Self {
+        let day = mean_solar_noon(coord.lon(), date);
         let solar_anomaly = solar_mean_anomaly(day);
         let equation_of_center = equation_of_center(solar_anomaly);
         let ecliptic_longitude = ecliptic_longitude(solar_anomaly, equation_of_center, day);
@@ -73,7 +81,7 @@ impl SolarDay {
         let declination = declination(ecliptic_longitude);
 
         Self {
-            lat,
+            lat: coord.lat(),
             altitude: 0.,
             solar_transit,
             declination,

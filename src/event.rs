@@ -70,7 +70,7 @@ pub enum SolarEvent {
     Dusk(DawnType),
     /// The point in time where the sun reaches a given elevation.
     Elevation {
-        /// Sun's elevation, in radians.
+        /// Sun's elevation, **in radians**.
         elevation: f64,
         /// `true` if this is the morning, `false` otherwise.
         morning: bool,

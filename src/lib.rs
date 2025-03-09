@@ -24,10 +24,14 @@
 
 const DEGREE: f64 = std::f64::consts::PI / 180.;
 
+mod coordinates;
 mod event;
 mod julian;
 mod solar_equation;
 
+use chrono::NaiveDate;
+
+pub use crate::coordinates::Coordinates;
 pub use crate::event::{DawnType, SolarEvent};
 pub use crate::solar_equation::SolarDay;
 
@@ -43,7 +47,7 @@ pub use crate::solar_equation::SolarDay;
 /// ```
 #[deprecated(
     since = "1.1.0",
-    note = "Use `SolarEvent`, which is more flexible and explicit."
+    note = "Use `SolarEvent` which is infaillibe, more flexible and explicit."
 )]
 pub fn sunrise_sunset(
     latitude: f64,
@@ -52,7 +56,10 @@ pub fn sunrise_sunset(
     month: u32,
     day: u32,
 ) -> (i64, i64) {
-    let solar_day = SolarDay::new(latitude, longitude, year, month, day);
+    let solar_day = SolarDay::new(
+        Coordinates::new(latitude, longitude).expect("invalid coordinates"),
+        NaiveDate::from_ymd_opt(year, month, day).expect("invalid date"),
+    );
 
     (
         solar_day.event_time(SolarEvent::Sunrise),

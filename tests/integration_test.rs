@@ -20,13 +20,23 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-use sunrise::{sunrise_sunset, DawnType, SolarDay, SolarEvent};
+use std::f64::consts::PI;
+
+use chrono::NaiveDate;
+use sunrise::{Coordinates, DawnType, SolarDay, SolarEvent};
+
+#[allow(deprecated)]
+use sunrise::sunrise_sunset;
 
 fn solar_day(year: i32) -> SolarDay {
-    SolarDay::new(0., 0., year, 1, 1)
+    SolarDay::new(
+        Coordinates::new(0., 0.).unwrap(),
+        NaiveDate::from_ymd_opt(year, 1, 1).unwrap(),
+    )
 }
 
 #[test]
+#[allow(deprecated)]
 fn test_sunrise() {
     assert_eq!(sunrise_sunset(0., 0., 1970, 1, 1), (21594, 65228));
 
@@ -94,5 +104,24 @@ fn test_astronomical() {
     assert_eq!(
         solar_day(2023).event_time(SolarEvent::Dawn(DawnType::Astronomical)),
         1672600902 // 01/01/2023 20:21:42
+    );
+}
+
+#[test]
+fn test_elevation() {
+    assert_eq!(
+        solar_day(2023).event_time(SolarEvent::Elevation {
+            elevation: PI / 4.0,
+            morning: true
+        }),
+        1672540944 // 01/01/2023 02:42:24
+    );
+
+    assert_eq!(
+        solar_day(2023).event_time(SolarEvent::Elevation {
+            elevation: PI / 4.0,
+            morning: false
+        }),
+        1672608242 // 01/01/2023 21:24:02
     );
 }
