@@ -41,6 +41,10 @@ pub use crate::solar_equation::SolarDay;
 /// // Calculate times for January 1, 2016 in Toronto
 /// let (sunrise, sunset) = sunrise_sunset(43.6532, -79.3832, 2016, 1, 1);
 /// ```
+#[deprecated(
+    since = "1.1.0",
+    note = "Use `SolarEvent`, which is more flexible and explicit."
+)]
 pub fn sunrise_sunset(
     latitude: f64,
     longitude: f64,

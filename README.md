@@ -20,18 +20,13 @@ Begin by adding this crate to `Cargo.toml`:
 sunrise = "1.1"
 ```
 
-You can `use` the `sunrise_sunset` function to perform the calculation:
-
-```rust
-// Calculate times for January 1, 2016 in Toronto
-let (sunrise, sunset) = sunrise::sunrise_sunset(43.6532, -79.3832, 2016, 1, 1);
-```
-
-If you need more refined control, you can use the `SolarDay` struct:
+You can use the `SolarDay` struct to perform computation of an event at a
+particular place and time:
 
 ```rust
 use sunrise::{sunrise_sunset, SolarDay, SolarEvent, DawnType};
 
+// January 1, 2016 in Toronto
 let dawn = SolarDay::new(43.6532, -79.3832, 2016, 1, 1)
     .with_altitude(54.)
     .event_time(SolarEvent::Dawn(DawnType::Civil));
