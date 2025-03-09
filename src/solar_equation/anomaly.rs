@@ -30,12 +30,7 @@ const J2000: f64 = 2451545.;
 /// Julian day.
 pub(crate) fn solar_mean_anomaly(day: f64) -> f64 {
     let v = ((357.5291 + 0.98560028 * (day - J2000)) * DEGREE) % (2. * PI);
-
-    if v < 0. {
-        v + 2. * PI
-    } else {
-        v
-    }
+    if v < 0. { v + 2. * PI } else { v }
 }
 
 #[cfg(test)]

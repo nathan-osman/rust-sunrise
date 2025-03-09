@@ -32,9 +32,9 @@ use std::f64::consts::PI;
 
 use chrono::NaiveDate;
 
+use crate::Coordinates;
 use crate::event::SolarEvent;
 use crate::julian::{julian_to_unix, mean_solar_noon};
-use crate::Coordinates;
 
 use self::anomaly::solar_mean_anomaly;
 use self::center::equation_of_center;
