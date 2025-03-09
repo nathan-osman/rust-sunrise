@@ -20,25 +20,30 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-use chrono::prelude::*;
+use std::f64::consts::PI;
 
-use crate::julian::unix_to_julian;
+use super::perihelion;
 
-/// Calculates the time at which the sun is at its highest altitude and returns
-/// the time as a Julian day.
-pub fn mean_solar_noon(longitude: f64, year: i32, month: u32, day: u32) -> f64 {
-    unix_to_julian(
-        Utc.with_ymd_and_hms(year, month, day, 12, 0, 0)
-            .earliest()
-            .expect("invalid date and time")
-            .timestamp(),
-    ) - longitude / 360.
+/// Calculates the angular distance of the earth along the ecliptic.
+pub(crate) fn ecliptic_longitude(solar_anomaly: f64, equation_of_center: f64, day: f64) -> f64 {
+    (solar_anomaly
+        + equation_of_center
+        + perihelion::argument_of_perihelion(day) % (2. * PI)
+        + 3. * PI)
+        % (2. * PI)
 }
 
 #[cfg(test)]
 mod tests {
+    use crate::DEGREE;
+    use approx::assert_relative_eq;
+
     #[test]
     fn test_prime_meridian() {
-        assert_eq!(super::mean_solar_noon(0., 1970, 1, 1), 2440588.);
+        assert_relative_eq!(
+            super::ecliptic_longitude(358.30683 * DEGREE, -0.05778 * DEGREE, 2440588.),
+            281.08372 * DEGREE,
+            epsilon = 0.00001
+        )
     }
 }

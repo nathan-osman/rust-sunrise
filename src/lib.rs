@@ -20,17 +20,49 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+#![doc = include_str!("../README.md")]
+
 const DEGREE: f64 = std::f64::consts::PI / 180.;
 
-mod anomaly;
-mod center;
-mod declination;
-mod hourangle;
+mod coordinates;
+mod event;
 mod julian;
-mod longitude;
-mod noon;
-mod perihelion;
-mod sunrise;
-mod transit;
+mod solar_equation;
 
-pub use crate::sunrise::sunrise_sunset;
+use chrono::NaiveDate;
+
+pub use crate::coordinates::Coordinates;
+pub use crate::event::{DawnType, SolarEvent};
+pub use crate::solar_equation::SolarDay;
+
+/// Calculates the sunrise and sunset times for the given location and date.
+///
+/// # Example
+///
+/// ```
+/// use sunrise::sunrise_sunset;
+///
+/// // Calculate times for January 1, 2016 in Toronto
+/// let (sunrise, sunset) = sunrise_sunset(43.6532, -79.3832, 2016, 1, 1);
+/// ```
+#[deprecated(
+    since = "1.1.0",
+    note = "Use `SolarEvent` which is infaillibe, more flexible and explicit."
+)]
+pub fn sunrise_sunset(
+    latitude: f64,
+    longitude: f64,
+    year: i32,
+    month: u32,
+    day: u32,
+) -> (i64, i64) {
+    let solar_day = SolarDay::new(
+        Coordinates::new(latitude, longitude).expect("invalid coordinates"),
+        NaiveDate::from_ymd_opt(year, month, day).expect("invalid date"),
+    );
+
+    (
+        solar_day.event_time(SolarEvent::Sunrise),
+        solar_day.event_time(SolarEvent::Sunset),
+    )
+}

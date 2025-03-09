@@ -17,26 +17,23 @@ Begin by adding this crate to `Cargo.toml`:
 
 ```toml
 [dependencies]
-sunrise = "1.0.0"
+sunrise = "1.1"
 ```
 
-Next, add a declaration for the crate:
+You can use the `SolarDay` struct to perform computation of an event at a
+particular place and time:
 
 ```rust
-extern crate sunrise;
-```
+use chrono::NaiveDate;
+use sunrise::{Coordinates, SolarDay, SolarEvent, DawnType};
 
-You can `use` the `sunrise_sunset` function to perform the calculation:
+// January 1, 2016 in Toronto
+let date = NaiveDate::from_ymd_opt(2016, 1, 1).unwrap();
+let coord = Coordinates::new(43.6532, -79.3832).unwrap();
 
-```rust
-// Calculate times for January 1, 2016 in Toronto
-let (sunrise, sunset) = sunrise::sunrise_sunset(
-    43.6532,
-    -79.3832,
-    2016,
-    1,
-    1,
-);
+let dawn = SolarDay::new(coord, date)
+    .with_altitude(54.)
+    .event_time(SolarEvent::Dawn(DawnType::Civil));
 ```
 
 [crate]: https://crates.io/crates/sunrise "crates.io"

@@ -20,20 +20,29 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-/// Calculates the argument of periapsis for the earth on the given Julian day.
-pub fn argument_of_perihelion(day: f64) -> f64 {
-    102.93005 + 0.3179526 * (day - 2451545.) / 36525.
+use std::f64::consts::PI;
+
+use crate::DEGREE;
+
+const J2000: f64 = 2451545.;
+
+/// Calculates the angle of the sun relative to the earth for the specified
+/// Julian day.
+pub(crate) fn solar_mean_anomaly(day: f64) -> f64 {
+    let v = ((357.5291 + 0.98560028 * (day - J2000)) * DEGREE) % (2. * PI);
+    if v < 0. { v + 2. * PI } else { v }
 }
 
 #[cfg(test)]
 mod tests {
+    use super::*;
     use approx::assert_relative_eq;
 
     #[test]
     fn test_prime_meridian() {
         assert_relative_eq!(
-            super::argument_of_perihelion(2440588.),
-            102.83467,
+            solar_mean_anomaly(2440588.),
+            358.30683 * DEGREE,
             epsilon = 0.00001
         )
     }

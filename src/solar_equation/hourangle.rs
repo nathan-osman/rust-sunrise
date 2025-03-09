@@ -21,23 +21,61 @@
 // IN THE SOFTWARE.
 
 use crate::DEGREE;
+use crate::event::SolarEvent;
 
 /// Calculates the second of the two angles required to locate a point on the
 /// celestial sphere in the equatorial coordinate system.
-pub fn hour_angle(latitude: f64, declination: f64) -> f64 {
-    let latitude_rad = latitude * DEGREE;
-    let declination_rad = declination * DEGREE;
-    let numerator = -0.01449 - f64::sin(latitude_rad) * f64::sin(declination_rad);
-    let denominator = f64::cos(latitude_rad) * f64::cos(declination_rad);
-    f64::acos(numerator / denominator) / DEGREE
+pub(crate) fn hour_angle(
+    latitude_deg: f64,
+    declination: f64,
+    altitude: f64,
+    event: SolarEvent,
+) -> f64 {
+    let latitude = latitude_deg * DEGREE;
+    let denominator = f64::cos(latitude) * f64::cos(declination);
+
+    let numerator = -f64::sin(
+        event.angle() + (2.076 * DEGREE * altitude.signum() * altitude.abs().sqrt() / 60.),
+    ) - f64::sin(latitude) * f64::sin(declination);
+
+    let sign = if event.is_morning() { -1. } else { 1. };
+    sign * f64::acos(numerator / denominator)
 }
 
 #[cfg(test)]
 mod tests {
+    use super::*;
     use approx::assert_relative_eq;
 
     #[test]
+    fn test_oposites() {
+        assert_relative_eq!(
+            hour_angle(32., -22., 0., SolarEvent::Sunrise),
+            -hour_angle(32., -22., 0., SolarEvent::Sunset),
+        );
+    }
+
+    #[test]
     fn test_prime_meridian() {
-        assert_relative_eq!(super::hour_angle(0., -22.97753), 90.9018, epsilon = 0.00001)
+        assert_relative_eq!(
+            hour_angle(0., -22.97753 * DEGREE, 0., SolarEvent::Sunset),
+            90.90516 * DEGREE,
+            epsilon = 0.00001
+        );
+    }
+
+    #[test]
+    fn test_altitude() {
+        assert_relative_eq!(
+            hour_angle(0., -22.97753 * DEGREE, 100., SolarEvent::Sunset),
+            91.28098 * DEGREE,
+            epsilon = 0.00001
+        );
+
+        assert_relative_eq!(
+            hour_angle(0., -22.97753 * DEGREE, -100., SolarEvent::Sunset),
+            90.52933 * DEGREE,
+            epsilon = 0.00001
+        );
     }
 }

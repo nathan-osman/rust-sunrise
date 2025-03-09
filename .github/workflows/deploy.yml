@@ -2,6 +2,7 @@ name: Lints, Tests, Deploy
 
 on:
   - push
+  - pull_request
 
 env:
   CARGO_TERM_COLOR: always
@@ -33,6 +34,8 @@ jobs:
         if: matrix.toolchain != 'nightly'
       - name: Tests
         run: cargo test
+      - name: Doc Tests
+        run: cargo test --doc
 
   deploy-rust:
     runs-on: ubuntu-latest
