@@ -30,7 +30,7 @@ mod transit;
 
 use std::f64::consts::PI;
 
-use chrono::NaiveDate;
+use chrono::{DateTime, NaiveDate, Utc};
 
 use crate::Coordinates;
 use crate::event::SolarEvent;
@@ -95,10 +95,11 @@ impl SolarDay {
         self
     }
 
-    /// Get the UNIX timestamp for when the input event will happen.
-    pub fn event_time(&self, event: SolarEvent) -> i64 {
+    /// Get the time for when the input event will happen.
+    pub fn event_time(&self, event: SolarEvent) -> DateTime<Utc> {
         let hour_angle = hour_angle(self.lat, self.declination, self.altitude, event);
         let frac = hour_angle / (2. * PI);
-        julian_to_unix(self.solar_transit + frac)
+        let timestamp = julian_to_unix(self.solar_transit + frac);
+        DateTime::from_timestamp(timestamp, 0).expect("invalid result")
     }
 }

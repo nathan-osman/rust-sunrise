@@ -62,7 +62,7 @@ pub fn sunrise_sunset(
     );
 
     (
-        solar_day.event_time(SolarEvent::Sunrise),
-        solar_day.event_time(SolarEvent::Sunset),
+        solar_day.event_time(SolarEvent::Sunrise).timestamp(),
+        solar_day.event_time(SolarEvent::Sunset).timestamp(),
     )
 }
