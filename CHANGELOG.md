@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.1
+
+- Fix _SolarEvent::Dawn_ & _SolarEvent::Dusk_ being inverted.
+
 ## 1.2.0
 
 - Add new feature "no-std"

@@ -64,9 +64,9 @@ pub enum SolarEvent {
     Sunrise,
     /// Sunset, is the daily disappearance of the Sun below the horizon in the evening.
     Sunset,
-    /// Dusk is the time that marks the end of twilight after sunset.
-    Dawn(DawnType),
     /// Dawn is the time that marks the beginning of twilight before sunrise.
+    Dawn(DawnType),
+    /// Dusk is the time that marks the end of twilight after sunset.
     Dusk(DawnType),
     /// The point in time where the sun reaches a given elevation.
     Elevation {
@@ -89,7 +89,7 @@ impl SolarEvent {
     pub(crate) fn is_morning(&self) -> bool {
         matches!(
             self,
-            SolarEvent::Sunrise | SolarEvent::Dusk(_) | SolarEvent::Elevation { morning: true, .. }
+            SolarEvent::Sunrise | SolarEvent::Dawn(_) | SolarEvent::Elevation { morning: true, .. }
         )
     }
 }

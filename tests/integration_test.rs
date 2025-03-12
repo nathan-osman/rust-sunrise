@@ -71,12 +71,12 @@ fn test_altitude() {
 #[test]
 fn test_civil() {
     assert_eq!(
-        solar_day(2023).event_time(SolarEvent::Dusk(DawnType::Civil)),
+        solar_day(2023).event_time(SolarEvent::Dawn(DawnType::Civil)),
         DateTime::parse_from_rfc3339("2023-01-01T05:37:08Z").unwrap()
     );
 
     assert_eq!(
-        solar_day(2023).event_time(SolarEvent::Dawn(DawnType::Civil)),
+        solar_day(2023).event_time(SolarEvent::Dusk(DawnType::Civil)),
         DateTime::parse_from_rfc3339("2023-01-01T18:29:18Z").unwrap()
     );
 }
@@ -84,12 +84,12 @@ fn test_civil() {
 #[test]
 fn test_nautical() {
     assert_eq!(
-        solar_day(2023).event_time(SolarEvent::Dusk(DawnType::Nautical)),
+        solar_day(2023).event_time(SolarEvent::Dawn(DawnType::Nautical)),
         DateTime::parse_from_rfc3339("2023-01-01T05:11:00Z").unwrap()
     );
 
     assert_eq!(
-        solar_day(2023).event_time(SolarEvent::Dawn(DawnType::Nautical)),
+        solar_day(2023).event_time(SolarEvent::Dusk(DawnType::Nautical)),
         DateTime::parse_from_rfc3339("2023-01-01T18:55:27Z").unwrap()
     );
 }
@@ -97,12 +97,12 @@ fn test_nautical() {
 #[test]
 fn test_astronomical() {
     assert_eq!(
-        solar_day(2023).event_time(SolarEvent::Dusk(DawnType::Astronomical)),
+        solar_day(2023).event_time(SolarEvent::Dawn(DawnType::Astronomical)),
         DateTime::parse_from_rfc3339("2023-01-01T04:44:45Z").unwrap()
     );
 
     assert_eq!(
-        solar_day(2023).event_time(SolarEvent::Dawn(DawnType::Astronomical)),
+        solar_day(2023).event_time(SolarEvent::Dusk(DawnType::Astronomical)),
         DateTime::parse_from_rfc3339("2023-01-01T19:21:42Z").unwrap()
     );
 }
@@ -124,4 +124,36 @@ fn test_elevation() {
         }),
         DateTime::parse_from_rfc3339("2023-01-01T21:24:02Z").unwrap()
     );
+}
+
+#[test]
+fn test_order() {
+    let sd = {
+        SolarDay::new(
+            Coordinates::new(2.0, 10.0).unwrap(),
+            NaiveDate::from_ymd_opt(2024, 2, 23).unwrap(),
+        )
+        .with_altitude(100.0)
+    };
+
+    let events_time = [
+        sd.event_time(SolarEvent::Dawn(DawnType::Astronomical)),
+        sd.event_time(SolarEvent::Dawn(DawnType::Nautical)),
+        sd.event_time(SolarEvent::Dawn(DawnType::Civil)),
+        sd.event_time(SolarEvent::Sunrise),
+        sd.event_time(SolarEvent::Elevation {
+            elevation: -0.1,
+            morning: true,
+        }),
+        sd.event_time(SolarEvent::Elevation {
+            elevation: -0.1,
+            morning: false,
+        }),
+        sd.event_time(SolarEvent::Sunset),
+        sd.event_time(SolarEvent::Dusk(DawnType::Civil)),
+        sd.event_time(SolarEvent::Dusk(DawnType::Nautical)),
+        sd.event_time(SolarEvent::Dusk(DawnType::Astronomical)),
+    ];
+
+    assert!(events_time.is_sorted());
 }
