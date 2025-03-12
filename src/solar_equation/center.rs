@@ -20,7 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-use crate::math::{DEGREE, sin};
+use crate::math::sin;
 
 /// Calculates the angular difference between the position of the earth in its
 /// elliptical orbit and the position it would occupy in a circular orbit for
@@ -29,7 +29,7 @@ pub(crate) fn equation_of_center(solar_anomaly: f64) -> f64 {
     let anomaly_sin = sin(solar_anomaly);
     let anomaly_2_sin = sin(2. * solar_anomaly);
     let anomaly_3_sin = sin(3. * solar_anomaly);
-    (1.9148 * anomaly_sin + 0.02 * anomaly_2_sin + 0.0003 * anomaly_3_sin) * DEGREE
+    (1.9148 * anomaly_sin + 0.02 * anomaly_2_sin + 0.0003 * anomaly_3_sin).to_radians()
 }
 
 #[cfg(test)]
@@ -40,8 +40,8 @@ mod tests {
     #[test]
     fn test_prime_meridian() {
         assert_relative_eq!(
-            equation_of_center(358.30683 * DEGREE),
-            -0.05778 * DEGREE,
+            equation_of_center(f64::to_radians(358.30683)),
+            f64::to_radians(-0.05778),
             epsilon = 0.00001
         )
     }

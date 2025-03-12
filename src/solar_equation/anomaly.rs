@@ -20,15 +20,19 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-use crate::math::{DEGREE, PI};
+use core::f64::consts::PI;
+
+use crate::math::rem_euclid;
 
 const J2000: f64 = 2451545.;
 
 /// Calculates the angle of the sun relative to the earth for the specified
 /// Julian day.
 pub(crate) fn solar_mean_anomaly(day: f64) -> f64 {
-    let v = ((357.5291 + 0.98560028 * (day - J2000)) * DEGREE) % (2. * PI);
-    if v < 0. { v + 2. * PI } else { v }
+    rem_euclid(
+        (357.5291 + 0.98560028 * (day - J2000)).to_radians(),
+        2. * PI,
+    )
 }
 
 #[cfg(test)]
@@ -40,7 +44,7 @@ mod tests {
     fn test_prime_meridian() {
         assert_relative_eq!(
             solar_mean_anomaly(2440588.),
-            358.30683 * DEGREE,
+            f64::to_radians(358.30683),
             epsilon = 0.00001
         )
     }

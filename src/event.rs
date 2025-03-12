@@ -20,8 +20,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-use crate::math::DEGREE;
-
 /// Type of dawn or dusk computation.
 ///
 /// If you are not sure which one to pick you probably want to use `Civil`. See
@@ -49,11 +47,11 @@ pub enum DawnType {
 
 impl DawnType {
     pub(crate) fn positive_angle(&self) -> f64 {
-        match self {
-            DawnType::Civil => 6. * DEGREE,
-            DawnType::Nautical => 12. * DEGREE,
-            DawnType::Astronomical => 18. * DEGREE,
-        }
+        f64::to_radians(match self {
+            DawnType::Civil => 6.,
+            DawnType::Nautical => 12.,
+            DawnType::Astronomical => 18.,
+        })
     }
 }
 
@@ -80,7 +78,7 @@ pub enum SolarEvent {
 impl SolarEvent {
     pub(crate) fn angle(&self) -> f64 {
         match self {
-            SolarEvent::Sunrise | SolarEvent::Sunset => 5. * DEGREE / 6.,
+            SolarEvent::Sunrise | SolarEvent::Sunset => f64::to_radians(5.) / 6.,
             SolarEvent::Dusk(t) | SolarEvent::Dawn(t) => t.positive_angle(),
             SolarEvent::Elevation { elevation, .. } => *elevation,
         }

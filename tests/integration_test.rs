@@ -20,7 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-use std::f64::consts::PI;
+use core::f64::consts::PI;
 
 use chrono::{DateTime, NaiveDate};
 use sunrise::{Coordinates, DawnType, SolarDay, SolarEvent};
