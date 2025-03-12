@@ -28,12 +28,13 @@ mod longitude;
 mod perihelion;
 mod transit;
 
+use core::f64::consts::PI;
+
 use chrono::{DateTime, NaiveDate, Utc};
 
 use crate::Coordinates;
 use crate::event::SolarEvent;
 use crate::julian::{julian_to_unix, mean_solar_noon};
-use crate::math::PI;
 
 use self::anomaly::solar_mean_anomaly;
 use self::center::equation_of_center;

@@ -21,7 +21,7 @@
 // IN THE SOFTWARE.
 
 use crate::event::SolarEvent;
-use crate::math::{DEGREE, abs, acos, cos, signum, sin, sqrt};
+use crate::math::{acos, cos, sin, sqrt};
 
 /// Calculates the second of the two angles required to locate a point on the
 /// celestial sphere in the equatorial coordinate system.
@@ -31,11 +31,12 @@ pub(crate) fn hour_angle(
     altitude: f64,
     event: SolarEvent,
 ) -> f64 {
-    let latitude = latitude_deg * DEGREE;
+    let latitude = latitude_deg.to_radians();
     let denominator = cos(latitude) * cos(declination);
 
     let numerator =
-        -sin(event.angle() + (2.076 * DEGREE * signum(altitude) * sqrt(abs(altitude)) / 60.))
+        -sin(event.angle()
+            + (f64::to_radians(2.076) * altitude.signum() * sqrt(altitude.abs()) / 60.))
             - sin(latitude) * sin(declination);
 
     let sign = if event.is_morning() { -1. } else { 1. };
@@ -58,8 +59,8 @@ mod tests {
     #[test]
     fn test_prime_meridian() {
         assert_relative_eq!(
-            hour_angle(0., -22.97753 * DEGREE, 0., SolarEvent::Sunset),
-            90.90516 * DEGREE,
+            hour_angle(0., f64::to_radians(-22.97753), 0., SolarEvent::Sunset),
+            f64::to_radians(90.90516),
             epsilon = 0.00001
         );
     }
@@ -67,14 +68,14 @@ mod tests {
     #[test]
     fn test_altitude() {
         assert_relative_eq!(
-            hour_angle(0., -22.97753 * DEGREE, 100., SolarEvent::Sunset),
-            91.28098 * DEGREE,
+            hour_angle(0., f64::to_radians(-22.97753), 100., SolarEvent::Sunset),
+            f64::to_radians(91.28098),
             epsilon = 0.00001
         );
 
         assert_relative_eq!(
-            hour_angle(0., -22.97753 * DEGREE, -100., SolarEvent::Sunset),
-            90.52933 * DEGREE,
+            hour_angle(0., f64::to_radians(-22.97753), -100., SolarEvent::Sunset),
+            f64::to_radians(90.52933),
             epsilon = 0.00001
         );
     }
