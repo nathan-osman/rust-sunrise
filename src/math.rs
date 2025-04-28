@@ -1,14 +1,19 @@
 /// Archimedes' constant (π)
 pub(crate) const PI: f64 = {
-    #[cfg(not(feature = "no-std"))]
+    #[cfg(all(not(feature = "libm"), feature = "std"))]
     {
         std::f64::consts::PI
     }
 
-    #[cfg(feature = "no-std")]
+    #[cfg(feature = "libm")]
     #[allow(clippy::approx_constant)]
     {
         3.141_592_653_589_793
+    }
+
+    #[cfg(not(any(feature = "libm", feature = "std")))]
+    {
+        core::f64::NAN
     }
 };
 
@@ -17,14 +22,20 @@ pub(crate) const DEGREE: f64 = PI / 180.;
 
 /// Computes the absolute value of `x`.
 pub(crate) fn abs(x: f64) -> f64 {
-    #[cfg(not(feature = "no-std"))]
+    #[cfg(all(not(feature = "libm"), feature = "std"))]
     {
         f64::abs(x)
     }
 
-    #[cfg(feature = "no-std")]
+    #[cfg(feature = "libm")]
     {
         libm::fabs(x)
+    }
+
+    #[cfg(not(any(feature = "libm", feature = "std")))]
+    {
+        let _ = x;
+        core::f64::NAN
     }
 }
 
@@ -34,12 +45,12 @@ pub(crate) fn abs(x: f64) -> f64 {
 /// - `-1.0` if the number is negative, `-0.0` or `NEG_INFINITY`
 /// - NaN if the number is NaN
 pub(crate) fn signum(x: f64) -> f64 {
-    #[cfg(not(feature = "no-std"))]
+    #[cfg(all(not(feature = "libm"), feature = "std"))]
     {
         f64::signum(x)
     }
 
-    #[cfg(feature = "no-std")]
+    #[cfg(feature = "libm")]
     {
         if x.is_nan() {
             f64::NAN
@@ -49,6 +60,12 @@ pub(crate) fn signum(x: f64) -> f64 {
             -1.
         }
     }
+
+    #[cfg(not(any(feature = "libm", feature = "std")))]
+    {
+        let _ = x;
+        core::f64::NAN
+    }
 }
 
 macro_rules! use_std_or_libm {
@@ -56,10 +73,15 @@ macro_rules! use_std_or_libm {
         $(
                 #[doc = $doc]
                 pub(crate) fn $func(x: f64) -> f64 {
-                    #[cfg(not(feature = "no-std"))]
+                    #[cfg(all(not(feature = "libm"), feature = "std"))]
                     { f64::$func(x) }
-                    #[cfg(feature = "no-std")]
+                    #[cfg(feature = "libm")]
                     { libm::$func(x) }
+                    #[cfg(not(any(feature = "libm", feature = "std")))]
+                    {
+                      let _ = x;
+                      core::f64::NAN
+                    }
                 }
         )+
     };
