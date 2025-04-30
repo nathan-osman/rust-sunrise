@@ -6,7 +6,7 @@
 
 This crate provides a function for calculating sunrise and sunset times using [this method](https://en.wikipedia.org/wiki/Sunrise_equation#Complete_calculation_on_Earth).
 
-You can enable the **no-std feature** if you need it to work in such a context, it will rely on `libm` instead.
+To work in a *no-std* environment disable the default features and enable the `libm` feature.
 
 ### Usage
 

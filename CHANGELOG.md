@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.0.0
+
+- To make features additive the "no-std" feature has been replaced by
+  the "std" feature (default). To build for "no-std" now, set 
+  "default-features" to false, and enable the "libm" feature.
+
 ## 1.2.1
 
 - Fix _SolarEvent::Dawn_ & _SolarEvent::Dusk_ being inverted.
