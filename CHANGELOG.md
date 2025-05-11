@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.1.0
+
+- Use functions and constants from `core` instead of vendoring them
+  in "no-std" mode.
+- Implement `Display` without "std" feature enabled.
+
 ## 2.0.0
 
 - To make features additive the "no-std" feature has been replaced by
