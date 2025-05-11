@@ -1,6 +1,6 @@
 [package]
 name = "sunrise"
-version = "1.2.1"
+version = "2.0.0"
 authors = ["Nathan Osman <nathan@quickmediasolutions.com>"]
 description = "Sunrise and sunset calculator"
 repository = "https://github.com/nathan-osman/rust-sunrise"
@@ -13,12 +13,14 @@ edition = "2024"
 name = "sunrise"
 
 [features]
-no-std = ["dep:libm"]
+default = ["std"]
+std = []
+libm = ["dep:libm"]
 
 [dependencies]
 chrono = { version = "0.4", default-features = false, features = [] }
 
-# feature: no-std
+# feature: libm
 libm = { version = "0.2", optional = true }
 
 [dev-dependencies]

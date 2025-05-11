@@ -61,8 +61,9 @@ mod tests {
     }
 
     #[test]
-    #[cfg(not(feature = "no-std"))]
+    #[cfg(feature = "std")]
     fn display() {
+        use std::string::ToString;
         let coord = Coordinates::new(10.0, 36.35).unwrap();
         assert_eq!(coord.to_string(), "(10.0, 36.35)");
     }

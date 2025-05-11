@@ -1,11 +1,10 @@
-// Calculate the non-negative remainder of `lhs mod rhs`.
+/// Calculate the non-negative remainder of `lhs mod rhs`.
 pub(crate) fn rem_euclid(lhs: f64, rhs: f64) -> f64 {
-    #[cfg(not(feature = "no-std"))]
+    #[cfg(feature = "std")]
     {
         lhs.rem_euclid(rhs)
     }
-
-    #[cfg(feature = "no-std")]
+    #[cfg(not(feature = "std"))]
     {
         let res = lhs % rhs;
         if res < 0. { res + rhs.abs() } else { res }
@@ -17,10 +16,15 @@ macro_rules! use_std_or_libm {
         $(
                 #[doc = $doc]
                 pub(crate) fn $func(x: f64) -> f64 {
-                    #[cfg(not(feature = "no-std"))]
+                    #[cfg(all(not(feature = "libm"), feature = "std"))]
                     { f64::$func(x) }
-                    #[cfg(feature = "no-std")]
+                    #[cfg(feature = "libm")]
                     { libm::$func(x) }
+                    #[cfg(not(any(feature = "libm", feature = "std")))]
+                    {
+                      let _ = x;
+                      core::f64::NAN
+                    }
                 }
         )+
     };

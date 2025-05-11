@@ -21,7 +21,13 @@
 // IN THE SOFTWARE.
 
 #![doc = include_str!("../README.md")]
-#![cfg_attr(feature = "no-std", no_std)]
+#![no_std]
+
+#[cfg(feature = "std")]
+extern crate std;
+
+#[cfg(not(any(feature = "std", feature = "libm")))]
+compile_error!("either the `std` or `libm` feature is required");
 
 mod coordinates;
 mod event;
