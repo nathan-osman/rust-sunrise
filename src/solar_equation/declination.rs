@@ -31,14 +31,13 @@ pub(crate) fn declination(ecliptic_longitude: f64) -> f64 {
 
 #[cfg(test)]
 mod tests {
-    use crate::math::DEGREE;
     use approx::assert_relative_eq;
 
     #[test]
     fn test_prime_meridian() {
         assert_relative_eq!(
-            super::declination(281.08372 * DEGREE),
-            -22.97753 * DEGREE,
+            super::declination(f64::to_radians(281.08372)),
+            f64::to_radians(-22.97753),
             epsilon = 0.00001
         )
     }

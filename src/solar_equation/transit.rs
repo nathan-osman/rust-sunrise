@@ -29,13 +29,16 @@ pub(crate) fn solar_transit(day: f64, solar_anomaly: f64, ecliptic_longitude: f6
 
 #[cfg(test)]
 mod tests {
-    use crate::math::DEGREE;
     use approx::assert_relative_eq;
 
     #[test]
     fn test_prime_meridian() {
         assert_relative_eq!(
-            super::solar_transit(2440588., 358.30683 * DEGREE, 281.08372 * DEGREE),
+            super::solar_transit(
+                2440588.,
+                f64::to_radians(358.30683),
+                f64::to_radians(281.08372)
+            ),
             2440588.00245,
             epsilon = 0.00001
         )

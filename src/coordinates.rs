@@ -1,3 +1,5 @@
+use core::fmt::{self, Display, Formatter};
+
 /// A valid pair of geographic coordinates.
 ///
 /// See <https://en.wikipedia.org/wiki/Geographic_coordinate_system>
@@ -32,9 +34,8 @@ impl Coordinates {
     }
 }
 
-#[cfg(feature = "std")]
-impl std::fmt::Display for Coordinates {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl Display for Coordinates {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         write!(f, "({:?}, {:?})", self.lat, self.lon)
     }
 }
