@@ -96,10 +96,16 @@ impl SolarDay {
     }
 
     /// Get the time for when the input event will happen.
-    pub fn event_time(&self, event: SolarEvent) -> DateTime<Utc> {
+    ///
+    /// Returns `None` if the event does not happen (e.g., sunset in a polar day).
+    pub fn event_time(&self, event: SolarEvent) -> Option<DateTime<Utc>> {
         let hour_angle = hour_angle(self.lat, self.declination, self.altitude, event);
+        if hour_angle.is_nan() {
+            return None;
+        }
+
         let frac = hour_angle / (2. * PI);
         let timestamp = julian_to_unix(self.solar_transit + frac);
-        DateTime::from_timestamp(timestamp, 0).expect("invalid result")
+        Some(DateTime::from_timestamp(timestamp, 0).expect("invalid result"))
     }
 }

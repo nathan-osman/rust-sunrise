@@ -68,7 +68,13 @@ pub fn sunrise_sunset(
     );
 
     (
-        solar_day.event_time(SolarEvent::Sunrise).timestamp(),
-        solar_day.event_time(SolarEvent::Sunset).timestamp(),
+        solar_day
+            .event_time(SolarEvent::Sunrise)
+            .expect("no sunrise")
+            .timestamp(),
+        solar_day
+            .event_time(SolarEvent::Sunset)
+            .expect("no sunset")
+            .timestamp(),
     )
 }
