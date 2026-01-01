@@ -53,7 +53,7 @@ pub use crate::solar_equation::SolarDay;
 /// ```
 #[deprecated(
     since = "1.1.0",
-    note = "Use `SolarEvent` which is infaillibe, more flexible and explicit."
+    note = "Use `SolarEvent` which is panic-free, more flexible and explicit."
 )]
 pub fn sunrise_sunset(
     latitude: f64,
@@ -68,7 +68,13 @@ pub fn sunrise_sunset(
     );
 
     (
-        solar_day.event_time(SolarEvent::Sunrise).timestamp(),
-        solar_day.event_time(SolarEvent::Sunset).timestamp(),
+        solar_day
+            .event_time(SolarEvent::Sunrise)
+            .expect("no sunrise")
+            .timestamp(),
+        solar_day
+            .event_time(SolarEvent::Sunset)
+            .expect("no sunset")
+            .timestamp(),
     )
 }
