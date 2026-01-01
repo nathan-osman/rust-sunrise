@@ -53,7 +53,7 @@ pub use crate::solar_equation::SolarDay;
 /// ```
 #[deprecated(
     since = "1.1.0",
-    note = "Use `SolarEvent` which is infaillibe, more flexible and explicit."
+    note = "Use `SolarEvent` which is panic-free, more flexible and explicit."
 )]
 pub fn sunrise_sunset(
     latitude: f64,

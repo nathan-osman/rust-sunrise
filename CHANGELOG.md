@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.0
+
+- `SolarDay::event_time` now returns `None` on a polar day if the provided
+  event never happens.
+
 ## 2.1.0
 
 - Use functions and constants from `core` instead of vendoring them
@@ -9,7 +14,7 @@
 ## 2.0.0
 
 - To make features additive the "no-std" feature has been replaced by
-  the "std" feature (default). To build for "no-std" now, set 
+  the "std" feature (default). To build for "no-std" now, set
   "default-features" to false, and enable the "libm" feature.
 
 ## 1.2.1
