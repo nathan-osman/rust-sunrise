@@ -7,6 +7,7 @@
 This crate provides a function for calculating sunrise and sunset times using [this method](https://en.wikipedia.org/wiki/Sunrise_equation#Complete_calculation_on_Earth).
 
 To work in a *no-std* environment disable the default features and enable the `libm` feature.
+To use `jiff` instead of `chrono` disable the default features and enable the `jiff` feature.
 
 ### Usage
 
@@ -19,23 +20,44 @@ Begin by adding this crate to `Cargo.toml`:
 
 ```toml
 [dependencies]
-sunrise = "1.2"
+sunrise = "3.0"
 ```
 
 You can use the `SolarDay` struct to perform computation of an event at a
 particular place and time:
 
+# Example using `chrono`
 ```rust
-use chrono::NaiveDate;
-use sunrise::{Coordinates, SolarDay, SolarEvent, DawnType};
+#[cfg(feature = "chrono")]
+{
+    use chrono::NaiveDate;
+    use sunrise::{Coordinates, SolarDay, SolarEvent, DawnType};
 
-// January 1, 2016 in Toronto
-let date = NaiveDate::from_ymd_opt(2016, 1, 1).unwrap();
-let coord = Coordinates::new(43.6532, -79.3832).unwrap();
+    // January 1, 2016 in Toronto
+    let date = NaiveDate::from_ymd_opt(2016, 1, 1).unwrap();
+    let coord = Coordinates::new(43.6532, -79.3832).unwrap();
 
-let dawn = SolarDay::new(coord, date)
-    .with_altitude(54.)
-    .event_time(SolarEvent::Dawn(DawnType::Civil));
+    let dawn = SolarDay::new(coord, date)
+        .with_altitude(54.)
+        .event_time(SolarEvent::Dawn(DawnType::Civil));
+}
+```
+
+# Example using `chrono`
+```rust
+#[cfg(feature = "jiff")]
+{
+    use jiff::civil::Date;
+    use sunrise::{Coordinates, SolarDay, SolarEvent, DawnType};
+
+    // January 1, 2016 in Toronto
+    let date = Date::constant(2016, 1, 1);
+    let coord = Coordinates::new(43.6532, -79.3832).unwrap();
+
+    let dawn = SolarDay::new(coord, date)
+        .with_altitude(54.)
+        .event_time(SolarEvent::Dawn(DawnType::Civil));
+}
 ```
 
 [crate]: https://crates.io/crates/sunrise "crates.io"

@@ -20,18 +20,20 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+#![cfg(feature = "jiff")]
+
 use core::f64::consts::PI;
 
-use chrono::{DateTime, NaiveDate};
+use jiff::civil::Date;
 use sunrise::{Coordinates, DawnType, SolarDay, SolarEvent};
 
 #[allow(deprecated)]
 use sunrise::sunrise_sunset;
 
-fn solar_day(year: i32) -> SolarDay {
+fn solar_day(year: i16) -> SolarDay {
     SolarDay::new(
         Coordinates::new(0., 0.).unwrap(),
-        NaiveDate::from_ymd_opt(year, 1, 1).unwrap(),
+        Date::constant(year, 1, 1),
     )
 }
 
@@ -42,12 +44,12 @@ fn test_sunrise() {
 
     assert_eq!(
         solar_day(1970).event_time(SolarEvent::Sunrise).unwrap(),
-        DateTime::parse_from_rfc3339("1970-01-01T05:59:54Z").unwrap()
+        "1970-01-01T05:59:54Z".parse().unwrap()
     );
 
     assert_eq!(
         solar_day(1970).event_time(SolarEvent::Sunset).unwrap(),
-        DateTime::parse_from_rfc3339("1970-01-01T18:07:08Z").unwrap()
+        "1970-01-01T18:07:08Z".parse().unwrap()
     );
 }
 
@@ -58,7 +60,7 @@ fn test_altitude() {
             .with_altitude(123.)
             .event_time(SolarEvent::Sunrise)
             .unwrap(),
-        DateTime::parse_from_rfc3339("1970-01-01T05:58:14Z").unwrap()
+        "1970-01-01T05:58:14Z".parse().unwrap()
     );
 
     assert_eq!(
@@ -66,7 +68,7 @@ fn test_altitude() {
             .with_altitude(-10.)
             .event_time(SolarEvent::Sunrise)
             .unwrap(),
-        DateTime::parse_from_rfc3339("1970-01-01T06:00:22Z").unwrap()
+        "1970-01-01T06:00:22Z".parse().unwrap()
     );
 }
 
@@ -76,14 +78,14 @@ fn test_civil() {
         solar_day(2023)
             .event_time(SolarEvent::Dawn(DawnType::Civil))
             .unwrap(),
-        DateTime::parse_from_rfc3339("2023-01-01T05:37:08Z").unwrap()
+        "2023-01-01T05:37:08Z".parse().unwrap()
     );
 
     assert_eq!(
         solar_day(2023)
             .event_time(SolarEvent::Dusk(DawnType::Civil))
             .unwrap(),
-        DateTime::parse_from_rfc3339("2023-01-01T18:29:18Z").unwrap()
+        "2023-01-01T18:29:18Z".parse().unwrap()
     );
 }
 
@@ -93,14 +95,14 @@ fn test_nautical() {
         solar_day(2023)
             .event_time(SolarEvent::Dawn(DawnType::Nautical))
             .unwrap(),
-        DateTime::parse_from_rfc3339("2023-01-01T05:11:00Z").unwrap()
+        "2023-01-01T05:11:00Z".parse().unwrap()
     );
 
     assert_eq!(
         solar_day(2023)
             .event_time(SolarEvent::Dusk(DawnType::Nautical))
             .unwrap(),
-        DateTime::parse_from_rfc3339("2023-01-01T18:55:27Z").unwrap()
+        "2023-01-01T18:55:27Z".parse().unwrap()
     );
 }
 
@@ -110,14 +112,14 @@ fn test_astronomical() {
         solar_day(2023)
             .event_time(SolarEvent::Dawn(DawnType::Astronomical))
             .unwrap(),
-        DateTime::parse_from_rfc3339("2023-01-01T04:44:45Z").unwrap()
+        "2023-01-01T04:44:45Z".parse().unwrap()
     );
 
     assert_eq!(
         solar_day(2023)
             .event_time(SolarEvent::Dusk(DawnType::Astronomical))
             .unwrap(),
-        DateTime::parse_from_rfc3339("2023-01-01T19:21:42Z").unwrap()
+        "2023-01-01T19:21:42Z".parse().unwrap()
     );
 }
 
@@ -130,7 +132,7 @@ fn test_elevation() {
                 morning: true
             })
             .unwrap(),
-        DateTime::parse_from_rfc3339("2023-01-01T02:42:24Z").unwrap()
+        "2023-01-01T02:42:24Z".parse().unwrap()
     );
 
     assert_eq!(
@@ -140,7 +142,7 @@ fn test_elevation() {
                 morning: false
             })
             .unwrap(),
-        DateTime::parse_from_rfc3339("2023-01-01T21:24:02Z").unwrap()
+        "2023-01-01T21:24:02Z".parse().unwrap()
     );
 }
 
@@ -149,7 +151,7 @@ fn test_order() {
     let sd = {
         SolarDay::new(
             Coordinates::new(2.0, 10.0).unwrap(),
-            NaiveDate::from_ymd_opt(2024, 2, 23).unwrap(),
+            Date::constant(2024, 2, 23),
         )
         .with_altitude(100.0)
     };
@@ -180,14 +182,14 @@ fn test_order() {
 fn test_polar_day() {
     let arctic_polar_day = SolarDay::new(
         Coordinates::new(85., 0.).unwrap(),
-        NaiveDate::from_ymd_opt(1970, 8, 1).unwrap(),
+        Date::constant(1970, 8, 1),
     );
     assert_eq!(arctic_polar_day.event_time(SolarEvent::Sunrise), None);
     assert_eq!(arctic_polar_day.event_time(SolarEvent::Sunset), None);
 
     let antarctic_polar_night = SolarDay::new(
         Coordinates::new(-85., 0.).unwrap(),
-        NaiveDate::from_ymd_opt(1970, 8, 1).unwrap(),
+        Date::constant(1970, 8, 1),
     );
     assert_eq!(antarctic_polar_night.event_time(SolarEvent::Sunrise), None);
     assert_eq!(antarctic_polar_night.event_time(SolarEvent::Sunset), None);

@@ -9,16 +9,24 @@ categories = ["date-and-time", "no-std"]
 license = "MIT"
 edition = "2024"
 
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
+
 [lib]
 name = "sunrise"
 
 [features]
-default = ["std"]
+default = ["std", "chrono"]
 std = []
 libm = ["dep:libm"]
 
 [dependencies]
-chrono = { version = "0.4", default-features = false, features = [] }
+# feature: chrono - This is enabled by default.
+chrono = { version = "0.4", optional = true, default-features = false, features = [] }
+
+# feature: jiff - This is an alternative to `chrono`.
+jiff = { version = "0.2", optional = true, default-features = false, features = []}
 
 # feature: libm
 libm = { version = "0.2", optional = true }
