@@ -90,4 +90,24 @@ impl SolarEvent {
             SolarEvent::Sunrise | SolarEvent::Dawn(_) | SolarEvent::Elevation { morning: true, .. }
         )
     }
+
+    /// Using either the start or end of the day, returns the matching pair of
+    /// dawn and dusk.
+    pub(crate) fn dawn_dusk(&self) -> (SolarEvent, SolarEvent) {
+        use SolarEvent::*;
+        match self {
+            Sunrise | Sunset => (Sunrise, Sunset),
+            Dawn(dawn) | Dusk(dawn) => (Dawn(*dawn), Dusk(*dawn)),
+            Elevation { elevation, .. } => (
+                Elevation {
+                    elevation: *elevation,
+                    morning: true,
+                },
+                Elevation {
+                    elevation: *elevation,
+                    morning: false,
+                },
+            ),
+        }
+    }
 }
