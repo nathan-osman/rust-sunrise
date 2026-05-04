@@ -30,7 +30,7 @@ mod transit;
 
 use core::f64::consts::PI;
 
-use chrono::{DateTime, NaiveDate, Utc};
+use chrono::{DateTime, Datelike, NaiveDate, Utc};
 
 use crate::Coordinates;
 use crate::event::SolarEvent;
@@ -107,5 +107,43 @@ impl SolarDay {
         let frac = hour_angle / (2. * PI);
         let timestamp = julian_to_unix(self.solar_transit + frac);
         Some(DateTime::from_timestamp(timestamp, 0).expect("invalid result"))
+    }
+
+    /// Whether it's currently day, as defined by the [`SolarEvent`].
+    ///
+    /// Either the start or end variants of `SolarEvent` can be used as they will
+    /// be built into the matching pair of the start and end of the day.
+    ///
+    /// For days during the polar day/night, uses a simple month and hemisphere
+    /// based heuristic to determine whether it's currently day or night.
+    ///
+    /// Using a time that is not on the same date as the one used for building the
+    /// struct will give non-sensical results.
+    pub fn is_day(&self, event: SolarEvent, time: DateTime<Utc>) -> bool {
+        let (dawn, dusk) = event.dawn_dusk();
+        match (self.event_time(dawn), self.event_time(dusk)) {
+            (Some(dawn_time), Some(dusk_time)) => time >= dawn_time && time < dusk_time,
+            (None, None) => is_summer(self.lat, time.date_naive()),
+
+            // This invariant is enforced by tests, therefore it's not documented
+            // as a potential panic (as that panic would be a bug in the implementation).
+            _ => unreachable!("a day must always have both a sunset and a sunrise, or neither"),
+        }
+    }
+
+    /// Reverse of [`Self::is_day`], see it's documentation for details.
+    pub fn is_night(&self, event: SolarEvent, time: DateTime<Utc>) -> bool {
+        !self.is_day(event, time)
+    }
+}
+
+fn is_summer(lat: f64, date: NaiveDate) -> bool {
+    let is_northern_hemisphere = lat >= 0.0;
+    let summer_in_northern_hemisphere = matches!(date.month(), 4..=9);
+
+    if is_northern_hemisphere {
+        summer_in_northern_hemisphere
+    } else {
+        !summer_in_northern_hemisphere
     }
 }
