@@ -44,7 +44,7 @@ impl IntoDateTime for jiff::civil::Date {
     fn at_solar_noon(self) -> DateTime {
         let timestamp = self
             .at(12, 0, 0, 0)
-            .to_zoned(jiff::tz::TimeZone::UTC)
+            .to_zoned_datetime(jiff::tz::TimeZone::UTC)
             .expect("Unable to convert to UTC timestamp")
             .timestamp();
         DateTime(timestamp.as_second())

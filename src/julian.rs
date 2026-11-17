@@ -63,6 +63,7 @@ mod tests {
             2440588.
         );
     }
+
     #[cfg(feature = "jiff")]
     #[test]
     fn test_solar_noon_jiff() {
