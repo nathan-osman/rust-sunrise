@@ -20,9 +20,11 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+#![cfg(feature = "chrono")]
+
 use core::f64::consts::PI;
 
-use chrono::{DateTime, NaiveDate};
+use chrono::{DateTime, NaiveDate, Utc};
 use sunrise::{Coordinates, DawnType, SolarDay, SolarEvent};
 
 #[allow(deprecated)]
@@ -41,12 +43,16 @@ fn test_sunrise() {
     assert_eq!(sunrise_sunset(0., 0., 1970, 1, 1), (21594, 65228));
 
     assert_eq!(
-        solar_day(1970).event_time(SolarEvent::Sunrise).unwrap(),
+        solar_day(1970)
+            .event_time::<DateTime<Utc>>(SolarEvent::Sunrise)
+            .unwrap(),
         DateTime::parse_from_rfc3339("1970-01-01T05:59:54Z").unwrap()
     );
 
     assert_eq!(
-        solar_day(1970).event_time(SolarEvent::Sunset).unwrap(),
+        solar_day(1970)
+            .event_time::<DateTime<Utc>>(SolarEvent::Sunset)
+            .unwrap(),
         DateTime::parse_from_rfc3339("1970-01-01T18:07:08Z").unwrap()
     );
 }
@@ -56,7 +62,7 @@ fn test_altitude() {
     assert_eq!(
         solar_day(1970)
             .with_altitude(123.)
-            .event_time(SolarEvent::Sunrise)
+            .event_time::<DateTime<Utc>>(SolarEvent::Sunrise)
             .unwrap(),
         DateTime::parse_from_rfc3339("1970-01-01T05:58:14Z").unwrap()
     );
@@ -64,7 +70,7 @@ fn test_altitude() {
     assert_eq!(
         solar_day(1970)
             .with_altitude(-10.)
-            .event_time(SolarEvent::Sunrise)
+            .event_time::<DateTime<Utc>>(SolarEvent::Sunrise)
             .unwrap(),
         DateTime::parse_from_rfc3339("1970-01-01T06:00:22Z").unwrap()
     );
@@ -74,14 +80,14 @@ fn test_altitude() {
 fn test_civil() {
     assert_eq!(
         solar_day(2023)
-            .event_time(SolarEvent::Dawn(DawnType::Civil))
+            .event_time::<DateTime<Utc>>(SolarEvent::Dawn(DawnType::Civil))
             .unwrap(),
         DateTime::parse_from_rfc3339("2023-01-01T05:37:08Z").unwrap()
     );
 
     assert_eq!(
         solar_day(2023)
-            .event_time(SolarEvent::Dusk(DawnType::Civil))
+            .event_time::<DateTime<Utc>>(SolarEvent::Dusk(DawnType::Civil))
             .unwrap(),
         DateTime::parse_from_rfc3339("2023-01-01T18:29:18Z").unwrap()
     );
@@ -91,14 +97,14 @@ fn test_civil() {
 fn test_nautical() {
     assert_eq!(
         solar_day(2023)
-            .event_time(SolarEvent::Dawn(DawnType::Nautical))
+            .event_time::<DateTime<Utc>>(SolarEvent::Dawn(DawnType::Nautical))
             .unwrap(),
         DateTime::parse_from_rfc3339("2023-01-01T05:11:00Z").unwrap()
     );
 
     assert_eq!(
         solar_day(2023)
-            .event_time(SolarEvent::Dusk(DawnType::Nautical))
+            .event_time::<DateTime<Utc>>(SolarEvent::Dusk(DawnType::Nautical))
             .unwrap(),
         DateTime::parse_from_rfc3339("2023-01-01T18:55:27Z").unwrap()
     );
@@ -108,14 +114,14 @@ fn test_nautical() {
 fn test_astronomical() {
     assert_eq!(
         solar_day(2023)
-            .event_time(SolarEvent::Dawn(DawnType::Astronomical))
+            .event_time::<DateTime<Utc>>(SolarEvent::Dawn(DawnType::Astronomical))
             .unwrap(),
         DateTime::parse_from_rfc3339("2023-01-01T04:44:45Z").unwrap()
     );
 
     assert_eq!(
         solar_day(2023)
-            .event_time(SolarEvent::Dusk(DawnType::Astronomical))
+            .event_time::<DateTime<Utc>>(SolarEvent::Dusk(DawnType::Astronomical))
             .unwrap(),
         DateTime::parse_from_rfc3339("2023-01-01T19:21:42Z").unwrap()
     );
@@ -125,7 +131,7 @@ fn test_astronomical() {
 fn test_elevation() {
     assert_eq!(
         solar_day(2023)
-            .event_time(SolarEvent::Elevation {
+            .event_time::<DateTime<Utc>>(SolarEvent::Elevation {
                 elevation: PI / 4.0,
                 morning: true
             })
@@ -135,7 +141,7 @@ fn test_elevation() {
 
     assert_eq!(
         solar_day(2023)
-            .event_time(SolarEvent::Elevation {
+            .event_time::<DateTime<Utc>>(SolarEvent::Elevation {
                 elevation: PI / 4.0,
                 morning: false
             })
@@ -154,7 +160,7 @@ fn test_order() {
         .with_altitude(100.0)
     };
 
-    let events_time = [
+    let events_time: [Option<DateTime<Utc>>; 10] = [
         sd.event_time(SolarEvent::Dawn(DawnType::Astronomical)),
         sd.event_time(SolarEvent::Dawn(DawnType::Nautical)),
         sd.event_time(SolarEvent::Dawn(DawnType::Civil)),
@@ -182,13 +188,25 @@ fn test_polar_day() {
         Coordinates::new(85., 0.).unwrap(),
         NaiveDate::from_ymd_opt(1970, 8, 1).unwrap(),
     );
-    assert_eq!(arctic_polar_day.event_time(SolarEvent::Sunrise), None);
-    assert_eq!(arctic_polar_day.event_time(SolarEvent::Sunset), None);
+    assert_eq!(
+        arctic_polar_day.event_time::<DateTime<Utc>>(SolarEvent::Sunrise),
+        None
+    );
+    assert_eq!(
+        arctic_polar_day.event_time::<DateTime<Utc>>(SolarEvent::Sunset),
+        None
+    );
 
     let antarctic_polar_night = SolarDay::new(
         Coordinates::new(-85., 0.).unwrap(),
         NaiveDate::from_ymd_opt(1970, 8, 1).unwrap(),
     );
-    assert_eq!(antarctic_polar_night.event_time(SolarEvent::Sunrise), None);
-    assert_eq!(antarctic_polar_night.event_time(SolarEvent::Sunset), None);
+    assert_eq!(
+        antarctic_polar_night.event_time::<DateTime<Utc>>(SolarEvent::Sunrise),
+        None
+    );
+    assert_eq!(
+        antarctic_polar_night.event_time::<DateTime<Utc>>(SolarEvent::Sunset),
+        None
+    );
 }

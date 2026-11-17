@@ -22,6 +22,7 @@
 
 #![doc = include_str!("../README.md")]
 #![no_std]
+#![cfg_attr(docsrs, feature(doc_cfg))]
 
 #[cfg(feature = "std")]
 extern crate std;
@@ -29,13 +30,15 @@ extern crate std;
 #[cfg(not(any(feature = "std", feature = "libm")))]
 compile_error!("either the `std` or `libm` feature is required");
 
+#[cfg(not(any(feature = "chrono", feature = "jiff")))]
+compile_error!("either the `chrono` or `jiff` feature is required");
+
 mod coordinates;
+pub mod datetime;
 mod event;
 mod julian;
 mod math;
 mod solar_equation;
-
-use chrono::NaiveDate;
 
 pub use crate::coordinates::Coordinates;
 pub use crate::event::{DawnType, SolarEvent};
@@ -53,8 +56,9 @@ pub use crate::solar_equation::SolarDay;
 /// ```
 #[deprecated(
     since = "1.1.0",
-    note = "Use `SolarEvent` which is panic-free, more flexible and explicit."
+    note = "Use [`SolarDay`] which is panic-free, more flexible and explicit."
 )]
+#[cfg(feature = "chrono")]
 pub fn sunrise_sunset(
     latitude: f64,
     longitude: f64,
@@ -62,6 +66,8 @@ pub fn sunrise_sunset(
     month: u32,
     day: u32,
 ) -> (i64, i64) {
+    use chrono::{DateTime, NaiveDate, Utc};
+
     let solar_day = SolarDay::new(
         Coordinates::new(latitude, longitude).expect("invalid coordinates"),
         NaiveDate::from_ymd_opt(year, month, day).expect("invalid date"),
@@ -69,11 +75,11 @@ pub fn sunrise_sunset(
 
     (
         solar_day
-            .event_time(SolarEvent::Sunrise)
+            .event_time::<DateTime<Utc>>(SolarEvent::Sunrise)
             .expect("no sunrise")
             .timestamp(),
         solar_day
-            .event_time(SolarEvent::Sunset)
+            .event_time::<DateTime<Utc>>(SolarEvent::Sunset)
             .expect("no sunset")
             .timestamp(),
     )
