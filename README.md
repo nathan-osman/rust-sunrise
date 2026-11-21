@@ -1,14 +1,16 @@
-## sunrise
+# sunrise
 
 [![](https://img.shields.io/crates/l/sunrise)][license]
 [![](https://img.shields.io/crates/v/sunrise)][crate]
 [![](https://img.shields.io/docsrs/sunrise)][docs]
 
-This crate provides a function for calculating sunrise and sunset times using [this method](https://en.wikipedia.org/wiki/Sunrise_equation#Complete_calculation_on_Earth).
+This crate provides a function for calculating sunrise and sunset times using
+[this method](https://en.wikipedia.org/wiki/Sunrise_equation#Complete_calculation_on_Earth).
 
-To work in a *no-std* environment disable the default features and enable the `libm` feature.
+To work in a *no-std* environment disable the default features and enable the
+`libm` feature.
 
-### Usage
+## Usage
 
 In order to perform the calculation, you'll need to provide the following:
 
@@ -26,11 +28,11 @@ You can use the `SolarDay` struct to perform computation of an event at a
 particular place and time:
 
 ```rust
-use chrono::NaiveDate;
+use jiff::civil::Date;
 use sunrise::{Coordinates, SolarDay, SolarEvent, DawnType};
 
 // January 1, 2016 in Toronto
-let date = NaiveDate::from_ymd_opt(2016, 1, 1).unwrap();
+let date = Date::constant(2016, 1, 1);
 let coord = Coordinates::new(43.6532, -79.3832).unwrap();
 
 let dawn = SolarDay::new(coord, date)

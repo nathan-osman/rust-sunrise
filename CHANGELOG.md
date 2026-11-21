@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.0.0
+
+- `chrono` was replaced with `jiff`.
+- removed deprecated function `sunrise_sunset`.
+
 ## 3.0.0
 
 - `SolarDay::event_time` now returns `None` on a polar day if the provided
